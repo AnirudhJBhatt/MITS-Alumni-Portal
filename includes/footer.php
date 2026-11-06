@@ -64,10 +64,10 @@ require_once __DIR__ . '/../config/config.php';
             </div>
         </div>
 
-        <hr class="my-4 text
+        <hr class="my-4 text">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-secondary gap-2">
-            <div>
-                &copy; <?= date('Y') ?> <span class="fw-semibold text-dark">Muthoot Institute of Technology and Science</span>. All rights reserved.
+            <div class="w-100 text-center">
+                &copy; <?= date('Y') ?> <span class="fw-semibold text-dark">Anirudh J Bhatt - Muthoot Institute of Technology and Science</span>. All rights reserved.
             </div>
         </div>
     </div>
