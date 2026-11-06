@@ -1,0 +1,327 @@
+/**
+ * MITS Alumni Portal - Main Stylesheet
+ * Red (#d8151c) & White Modern Design System
+ */
+
+:root {
+    --primary-color: #d8151c;
+    --primary-hover: #b91016;
+    --primary-dark: #990c12;
+    --primary-light: #fef2f2;
+    --primary-subtle: #fee2e2;
+    --primary-border: #fecaca;
+    --accent-color: #ef4444;
+    --accent-hover: #dc2626;
+    --surface-bg: #fcfcfd;
+    --card-bg: #ffffff;
+    --border-color: #f1f5f9;
+    --border-subtle: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --brand-gradient: linear-gradient(135deg, #d8151c 0%, #b91016 100%);
+    --brand-gradient-glow: linear-gradient(135deg, #d8151c 0%, #ff3b44 100%);
+    --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+    --shadow-elevated: 0 10px 20px -3px rgba(216, 21, 28, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+}
+
+/* -------------------------------------------------------------
+ * 1. Base & Typography
+ * ------------------------------------------------------------- */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--text-primary);
+    background-color: var(--surface-bg);
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+}
+
+.bg-surface {
+    background-color: var(--surface-bg) !important;
+}
+
+.text-gradient {
+    background: var(--brand-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.line-height-tight {
+    line-height: 1.25;
+}
+
+/* Bootstrap 5 Color Overrides for Red Theme */
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+    color: #ffffff !important;
+}
+
+.bg-primary-subtle {
+    background-color: var(--primary-light) !important;
+    color: var(--primary-color) !important;
+}
+
+.border-primary-subtle {
+    border-color: var(--primary-border) !important;
+}
+
+/* -------------------------------------------------------------
+ * 2. Navbar Styling & Glassmorphism
+ * ------------------------------------------------------------- */
+.navbar-glass {
+    background-color: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background-color 0.3s ease;
+}
+
+.brand-icon-box {
+    width: 38px;
+    height: 38px;
+    background: var(--brand-gradient);
+    color: #ffffff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    box-shadow: 0 4px 12px rgba(216, 21, 28, 0.28);
+}
+
+.navbar .nav-link {
+    font-weight: 500;
+    color: var(--text-secondary);
+    border-radius: 8px;
+    padding: 0.5rem 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+    color: var(--primary-color);
+    background-color: var(--primary-light);
+}
+
+.nav-avatar {
+    width: 34px;
+    height: 34px;
+    object-fit: cover;
+}
+
+.user-name-label {
+    font-size: 0.875rem;
+    max-width: 130px;
+}
+
+.user-role-label {
+    font-size: 0.725rem;
+}
+
+.user-dropdown-menu {
+    min-width: 230px;
+    border: 1px solid var(--border-subtle);
+}
+
+.user-dropdown-menu .dropdown-item {
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    transition: background-color 0.15s ease;
+}
+
+.user-dropdown-menu .dropdown-item:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+}
+
+/* -------------------------------------------------------------
+ * 3. Modern Cards & Containers
+ * ------------------------------------------------------------- */
+.card-modern {
+    background: var(--card-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-elevated);
+    border-color: var(--primary-border);
+}
+
+.card-header-clean {
+    background: transparent;
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 1.25rem 1.5rem;
+}
+
+.card-body-clean {
+    padding: 1.5rem;
+}
+
+/* -------------------------------------------------------------
+ * 4. Hero Section & Feature Cards
+ * ------------------------------------------------------------- */
+.hero-section {
+    background: radial-gradient(100% 100% at 50% 0%, rgba(216, 21, 28, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 4.5rem 0 3.5rem;
+}
+
+.badge-hero {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    font-weight: 600;
+    border: 1px solid var(--primary-border);
+}
+
+.stat-card {
+    background: #ffffff;
+    border: 1px solid var(--border-subtle);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-border);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    margin-bottom: 0.75rem;
+}
+
+/* -------------------------------------------------------------
+ * 5. Buttons & Interactive Elements
+ * ------------------------------------------------------------- */
+.btn-primary {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(216, 21, 28, 0.35) !important;
+    color: #ffffff !important;
+}
+
+.btn-outline-primary {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    font-weight: 600;
+    background-color: transparent;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(216, 21, 28, 0.25);
+}
+
+.btn-icon {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+/* Form Controls */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(216, 21, 28, 0.15);
+}
+
+/* -------------------------------------------------------------
+ * 6. Avatars
+ * ------------------------------------------------------------- */
+.avatar-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-md {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-lg {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-xl {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* -------------------------------------------------------------
+ * 7. Badges & Tags
+ * ------------------------------------------------------------- */
+.skill-tag {
+    display: inline-block;
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-border);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    margin-right: 0.35rem;
+    margin-bottom: 0.35rem;
+}
+
+/* -------------------------------------------------------------
+ * 8. Utilities & Footer
+ * ------------------------------------------------------------- */
+.hover-primary:hover {
+    color: var(--primary-color) !important;
+}
+
+.footer {
+    border-top: 1px solid var(--border-subtle);
+    background-color: #ffffff !important;
+}
