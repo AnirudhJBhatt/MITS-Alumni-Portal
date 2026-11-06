@@ -24,6 +24,10 @@ $current_page = $current_page ?? basename($_SERVER['PHP_SELF'], '.php');
 
     <title><?= e($page_title) ?></title>
 
+    <!-- Favicon / Brand Icon -->
+    <link rel="icon" type="image/jpeg" href="<?= e(BASE_URL) ?>/assets/images/OSAM%20logo.jpg">
+    <link rel="apple-touch-icon" href="<?= e(BASE_URL) ?>/assets/images/OSAM%20logo.jpg">
+
     <!-- Google Fonts: Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

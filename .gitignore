@@ -1,0 +1,27 @@
+# Environment files (contains secret credentials)
+.env
+.env.backup
+.env.local
+.env.production
+
+# Uploaded user content (keep folder structure via index.html)
+uploads/avatars/*
+uploads/posts/*
+uploads/gallery/*
+uploads/resumes/*
+!uploads/**/index.html
+!uploads/.htaccess
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Database dumps / temporary files
+*.sql.bak
+*.log
+

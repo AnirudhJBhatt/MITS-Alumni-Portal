@@ -34,14 +34,14 @@ include_once __DIR__ . '/includes/header.php';
                 </p>
                 <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start mb-4">
                     <?php if (is_logged_in()): ?>
-                        <a href="<?= e(BASE_URL) ?>/feed.php" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm">
+                        <a href="<?= e(BASE_URL) ?>/feed" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm">
                             <i class="bi bi-collection-play me-2"></i>Go to Community Feed
                         </a>
-                        <a href="<?= e(BASE_URL) ?>/directory.php" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
+                        <a href="<?= e(BASE_URL) ?>/directory" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
                             <i class="bi bi-people me-2"></i>Explore Directory
                         </a>
                     <?php else: ?>
-                        <a href="<?= e(BASE_URL) ?>/auth/login.php" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm">
+                        <a href="<?= e(BASE_URL) ?>/auth/login" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm">
                             <i class="bi bi-google me-2"></i>Join with Google Sign-In
                         </a>
                         <a href="#about" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
@@ -89,9 +89,7 @@ include_once __DIR__ . '/includes/header.php';
             <div class="col-lg-5">
                 <div class="card card-modern border-0 shadow-lg p-4 bg-white position-relative">
                     <div class="d-flex align-items-center gap-3 pb-3 mb-3 border-bottom">
-                        <div class="brand-icon-box" style="width: 52px; height: 52px; font-size: 1.5rem;">
-                            <i class="bi bi-mortarboard"></i>
-                        </div>
+                        <img src="<?= e(BASE_URL) ?>/assets/images/OSAM%20logo.jpg" alt="OSAM Logo" class="brand-logo-img" style="width: 52px; height: 52px; border-radius: 12px;">
                         <div>
                             <h5 class="fw-bold text-dark mb-0 font-heading">OSAM Overview</h5>
                             <span class="text-secondary small">MITS Autonomous Alumni Body</span>
@@ -129,11 +127,11 @@ include_once __DIR__ . '/includes/header.php';
                     </ul>
 
                     <div class="d-grid gap-2">
-                        <a href="<?= e(BASE_URL) ?>/directory.php" class="btn btn-primary rounded-pill py-2 shadow-sm">
+                        <a href="<?= e(BASE_URL) ?>/directory" class="btn btn-primary rounded-pill py-2 shadow-sm">
                             <i class="bi bi-search me-2"></i>Explore Alumni Directory
                         </a>
                         <?php if (!is_logged_in()): ?>
-                            <a href="<?= e(BASE_URL) ?>/auth/login.php" class="btn btn-outline-primary rounded-pill py-2">
+                            <a href="<?= e(BASE_URL) ?>/auth/login" class="btn btn-outline-primary rounded-pill py-2">
                                 <i class="bi bi-google me-2"></i>Join OSAM Network
                             </a>
                         <?php endif; ?>
@@ -356,15 +354,15 @@ include_once __DIR__ . '/includes/header.php';
             </p>
             <div class="d-flex flex-wrap justify-content-center gap-3">
                 <?php if (is_logged_in()): ?>
-                    <a href="<?= e(BASE_URL) ?>/feed.php" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary shadow">
+                    <a href="<?= e(BASE_URL) ?>/feed" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary shadow">
                         <i class="bi bi-collection-play me-2"></i>Go to Community Feed
                     </a>
                 <?php else: ?>
-                    <a href="<?= e(BASE_URL) ?>/auth/login.php" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary shadow">
+                    <a href="<?= e(BASE_URL) ?>/auth/login" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary shadow">
                         <i class="bi bi-google me-2"></i>Sign In with Google
                     </a>
                 <?php endif; ?>
-                <a href="<?= e(BASE_URL) ?>/directory.php" class="btn btn-outline-light btn-lg rounded-pill px-4">
+                <a href="<?= e(BASE_URL) ?>/directory" class="btn btn-outline-light btn-lg rounded-pill px-4">
                     <i class="bi bi-search me-2"></i>Find Batchmates
                 </a>
             </div>

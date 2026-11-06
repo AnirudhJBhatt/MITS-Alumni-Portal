@@ -9,46 +9,63 @@ if (!defined('APP_INIT')) {
     define('APP_INIT', true);
 }
 
-// Application Information
-define('APP_NAME', 'MITS Connect');
-define('APP_SHORT_NAME', 'MITS Connect');
-define('APP_TAGLINE', 'Connecting Generations of Excellence');
-define('APP_VERSION', '1.0.0');
+// 1. Load Environment Variables from .env
+require_once __DIR__ . '/env.php';
 
-// Base URL configuration (auto-detect or customize)
-$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$script_dir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+// 2. Application Information
+define('APP_NAME', env('APP_NAME', 'MITS Connect'));
+define('APP_SHORT_NAME', env('APP_SHORT_NAME', 'MITS Connect'));
+define('APP_TAGLINE', env('APP_TAGLINE', 'Connecting Generations of Excellence'));
+define('APP_VERSION', env('APP_VERSION', '1.0.0'));
+define('APP_ENV', env('APP_ENV', 'development'));
 
-// Calculate root path relative to web root
-$base_path = '/MITS-Alumni-Portal';
-define('BASE_URL', $protocol . $host . $base_path);
+// 3. Base URL configuration (from .env or auto-detect domain, port, subfolder)
+if (!defined('BASE_URL')) {
+    $env_url = env('APP_URL');
+    if (!empty($env_url)) {
+        define('BASE_URL', rtrim($env_url, '/'));
+    } else {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)) ? "https://" : "http://";
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 
-// Paths
+        $doc_root = !empty($_SERVER['DOCUMENT_ROOT']) ? str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT'])) : '';
+        $app_root = str_replace('\\', '/', realpath(__DIR__ . '/..'));
+
+        $base_path = '';
+        if (!empty($doc_root) && strpos($app_root, $doc_root) === 0) {
+            $base_path = substr($app_root, strlen($doc_root));
+        }
+
+        $base_path = rtrim(str_replace('\\', '/', $base_path), '/');
+        define('BASE_URL', $protocol . $host . $base_path);
+    }
+}
+
+// 4. Paths & Uploads
 define('ROOT_PATH', realpath(__DIR__ . '/..'));
 define('UPLOAD_DIR', ROOT_PATH . '/uploads');
-define('MAX_UPLOAD_SIZE', 5 * 1024 * 1024); // 5 MB
+define('MAX_UPLOAD_SIZE', ((int)env('MAX_UPLOAD_SIZE_MB', 5)) * 1024 * 1024);
 define('ALLOWED_IMAGE_TYPES', ['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 
-// Google Identity Services (GIS) Credentials
-// Replace with your Google Cloud Console OAuth 2.0 Web Client ID
-define('GOOGLE_CLIENT_ID', 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com');
+// 5. Google Identity Services (GIS) Credentials
+define('GOOGLE_CLIENT_ID', env('GOOGLE_CLIENT_ID', 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com'));
+define('GOOGLE_CLIENT_SECRET', env('GOOGLE_CLIENT_SECRET', ''));
 
-// Default Admin Credentials / Super Admin Email (auto-promoted on first login)
-define('SUPER_ADMIN_EMAIL', 'admin@mits.ac.in');
+// 6. Super Administrator Email
+define('SUPER_ADMIN_EMAIL', env('SUPER_ADMIN_EMAIL', 'admin@mits.ac.in'));
 
-// Timezone
-date_default_timezone_set('Asia/Kolkata');
+// 7. Timezone
+date_default_timezone_set(env('APP_TIMEZONE', 'Asia/Kolkata'));
 
-// Security Headers
+// 8. Security Headers
 if (!headers_sent()) {
     header('X-Content-Type-Options: nosniff');
     header('X-Frame-Options: SAMEORIGIN');
     header('Referrer-Policy: strict-origin-when-cross-origin');
 }
 
-// Error Reporting (Set to false for production)
-define('APP_DEBUG', true);
+// 9. Error Reporting
+define('APP_DEBUG', (bool)env('APP_DEBUG', true));
 if (APP_DEBUG) {
     error_reporting(E_ALL);
     ini_set('display_errors', '1');

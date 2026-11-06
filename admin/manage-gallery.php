@@ -226,10 +226,10 @@ include_once __DIR__ . '/../includes/header.php';
         </div>
 
         <div class="d-flex gap-2">
-            <a href="<?= e(BASE_URL) ?>/gallery.php" target="_blank" class="btn btn-outline-danger rounded-pill px-3">
+            <a href="<?= e(BASE_URL) ?>/gallery" target="_blank" class="btn btn-outline-danger rounded-pill px-3">
                 <i class="bi bi-eye me-1"></i>View Public Gallery
             </a>
-            <a href="<?= e(BASE_URL) ?>/admin/index.php" class="btn btn-outline-secondary rounded-pill px-3">
+            <a href="<?= e(BASE_URL) ?>/admin/" class="btn btn-outline-secondary rounded-pill px-3">
                 <i class="bi bi-arrow-left me-1"></i>Dashboard Overview
             </a>
         </div>

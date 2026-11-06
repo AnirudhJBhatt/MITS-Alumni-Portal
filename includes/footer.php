@@ -14,10 +14,8 @@ require_once __DIR__ . '/../config/config.php';
         <div class="row g-4 justify-content-between">
             <div class="col-lg-5 col-md-6">
                 <div class="d-flex align-items-center gap-2 mb-3">
-                    <div class="brand-icon-box">
-                        <i class="bi bi-mortarboard-fill"></i>
-                    </div>
-                    <span class="fs-5 fw-bold text-dark">MITS Connect</span>
+                    <img src="<?= e(BASE_URL) ?>/assets/images/OSAM%20logo.jpg" alt="<?= e(APP_NAME) ?> Logo" class="brand-logo-img" style="width: 42px; height: 42px;">
+                    <span class="fs-5 fw-bold text-dark"><?= e(APP_NAME) ?></span>
                 </div>
                 <p class="text-secondary small pe-lg-4 mb-3">
                     Muthoot Institute of Technology and Science (MITS) Connect platform connects graduates across batches, empowers mentorship, fosters career networking, and celebrates institutional legacy.
@@ -35,12 +33,12 @@ require_once __DIR__ . '/../config/config.php';
             <div class="col-6 col-lg-2 col-md-3">
                 <h6 class="fw-bold text-dark mb-3">Quick Links</h6>
                 <ul class="list-unstyled small mb-0 d-flex flex-column gap-2">
-                    <li><a href="<?= e(BASE_URL) ?>/index.php#about" class="text-decoration-none text-secondary hover-primary">About OSAM</a></li>
-                    <li><a href="<?= e(BASE_URL) ?>/gallery.php" class="text-decoration-none text-secondary hover-primary">Event Gallery</a></li>
-                    <li><a href="<?= e(BASE_URL) ?>/directory.php" class="text-decoration-none text-secondary hover-primary">Alumni Directory</a></li>
-                    <li><a href="<?= e(BASE_URL) ?>/jobs.php" class="text-decoration-none text-secondary hover-primary">Career Board</a></li>
-                    <li><a href="<?= e(BASE_URL) ?>/feed.php" class="text-decoration-none text-secondary hover-primary">Community Feed</a></li>
-                    <li><a href="<?= e(BASE_URL) ?>/auth/login.php" class="text-decoration-none text-secondary hover-primary">Sign In with Google</a></li>
+                    <li><a href="<?= e(BASE_URL) ?>/#about" class="text-decoration-none text-secondary hover-primary">About OSAM</a></li>
+                    <li><a href="<?= e(BASE_URL) ?>/gallery" class="text-decoration-none text-secondary hover-primary">Event Gallery</a></li>
+                    <li><a href="<?= e(BASE_URL) ?>/directory" class="text-decoration-none text-secondary hover-primary">Alumni Directory</a></li>
+                    <li><a href="<?= e(BASE_URL) ?>/jobs" class="text-decoration-none text-secondary hover-primary">Career Board</a></li>
+                    <li><a href="<?= e(BASE_URL) ?>/feed" class="text-decoration-none text-secondary hover-primary">Community Feed</a></li>
+                    <li><a href="<?= e(BASE_URL) ?>/auth/login" class="text-decoration-none text-secondary hover-primary">Sign In with Google</a></li>
                 </ul>
             </div>
 
@@ -86,4 +84,3 @@ require_once __DIR__ . '/../config/config.php';
 
 </body>
 </html>
--muted opacity-25">

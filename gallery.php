@@ -65,7 +65,7 @@ include_once __DIR__ . '/includes/header.php';
 
             <div class="col-lg-4 text-lg-end">
                 <?php if (is_admin()): ?>
-                    <a href="<?= e(BASE_URL) ?>/admin/manage-gallery.php" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm">
+                    <a href="<?= e(BASE_URL) ?>/admin/manage-gallery" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm">
                         <i class="bi bi-plus-circle me-2"></i>Manage & Add Photos
                     </a>
                 <?php endif; ?>
@@ -102,7 +102,7 @@ include_once __DIR__ . '/includes/header.php';
             <p class="text-secondary small mb-4">The alumni association and administration will be posting photos from past and upcoming reunions soon.</p>
             <?php if (is_admin()): ?>
                 <div>
-                    <a href="<?= e(BASE_URL) ?>/admin/manage-gallery.php" class="btn btn-primary rounded-pill px-4">
+                    <a href="<?= e(BASE_URL) ?>/admin/manage-gallery" class="btn btn-primary rounded-pill px-4">
                         <i class="bi bi-plus-circle me-2"></i>Create First Event Gallery
                     </a>
                 </div>

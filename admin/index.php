@@ -61,16 +61,16 @@ include_once __DIR__ . '/../includes/header.php';
         </div>
         
         <div class="d-flex flex-wrap gap-2">
-            <a href="<?= e(BASE_URL) ?>/admin/verify-alumni.php" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <a href="<?= e(BASE_URL) ?>/admin/verify-alumni" class="btn btn-primary rounded-pill px-4 shadow-sm">
                 <i class="bi bi-patch-check me-2"></i>Verification Queue
                 <?php if ($pending_alumni > 0): ?>
                     <span class="badge bg-white text-danger rounded-pill ms-2"><?= $pending_alumni ?></span>
                 <?php endif; ?>
             </a>
-            <a href="<?= e(BASE_URL) ?>/admin/manage-gallery.php" class="btn btn-outline-danger rounded-pill px-3">
+            <a href="<?= e(BASE_URL) ?>/admin/manage-gallery" class="btn btn-outline-danger rounded-pill px-3">
                 <i class="bi bi-images me-1"></i>Manage Gallery
             </a>
-            <a href="<?= e(BASE_URL) ?>/admin/manage-users.php" class="btn btn-outline-secondary rounded-pill px-3">
+            <a href="<?= e(BASE_URL) ?>/admin/manage-users" class="btn btn-outline-secondary rounded-pill px-3">
                 <i class="bi bi-people me-1"></i>Manage Users
             </a>
         </div>
@@ -102,7 +102,7 @@ include_once __DIR__ . '/../includes/header.php';
                     </div>
                 </div>
                 <h3 class="fw-bold font-heading mb-1 text-danger"><?= number_format($pending_alumni) ?></h3>
-                <small class="text-muted"><a href="<?= e(BASE_URL) ?>/admin/verify-alumni.php" class="text-decoration-none text-danger fw-semibold">Review queue &rarr;</a></small>
+                <small class="text-muted"><a href="<?= e(BASE_URL) ?>/admin/verify-alumni" class="text-decoration-none text-danger fw-semibold">Review queue &rarr;</a></small>
             </div>
         </div>
 
@@ -116,7 +116,7 @@ include_once __DIR__ . '/../includes/header.php';
                     </div>
                 </div>
                 <h3 class="fw-bold font-heading mb-1 text-dark"><?= number_format($active_jobs) ?></h3>
-                <small class="text-muted"><a href="<?= e(BASE_URL) ?>/admin/manage-jobs.php" class="text-decoration-none text-success fw-semibold">Moderate openings &rarr;</a></small>
+                <small class="text-muted"><a href="<?= e(BASE_URL) ?>/admin/manage-jobs" class="text-decoration-none text-success fw-semibold">Moderate openings &rarr;</a></small>
             </div>
         </div>
 
@@ -130,7 +130,7 @@ include_once __DIR__ . '/../includes/header.php';
                     </div>
                 </div>
                 <h3 class="fw-bold font-heading mb-1 text-dark"><?= number_format($total_posts) ?></h3>
-                <small class="text-muted"><a href="<?= e(BASE_URL) ?>/admin/manage-posts.php" class="text-decoration-none text-info fw-semibold">Moderate feed &rarr;</a></small>
+                <small class="text-muted"><a href="<?= e(BASE_URL) ?>/admin/manage-posts" class="text-decoration-none text-info fw-semibold">Moderate feed &rarr;</a></small>
             </div>
         </div>
     </div>
@@ -144,7 +144,7 @@ include_once __DIR__ . '/../includes/header.php';
                     <h5 class="fw-bold font-heading mb-0 text-dark">
                         <i class="bi bi-clock text-warning me-2"></i>Pending Verification Queue
                     </h5>
-                    <a href="<?= e(BASE_URL) ?>/admin/verify-alumni.php" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                    <a href="<?= e(BASE_URL) ?>/admin/verify-alumni" class="btn btn-sm btn-outline-primary rounded-pill px-3">
                         View All (<?= $pending_alumni ?>)
                     </a>
                 </div>
@@ -183,7 +183,7 @@ include_once __DIR__ . '/../includes/header.php';
                                         <td class="small text-secondary"><?= e($p['department'] ?? 'Not specified') ?></td>
                                         <td class="small fw-semibold"><?= e($p['graduation_year'] ?? '—') ?></td>
                                         <td class="text-end">
-                                            <a href="<?= e(BASE_URL) ?>/admin/verify-alumni.php?user_id=<?= $p['id'] ?>" class="btn btn-sm btn-primary rounded-pill px-3 py-1">
+                                            <a href="<?= e(BASE_URL) ?>/admin/verify-alumni?user_id=<?= $p['id'] ?>" class="btn btn-sm btn-primary rounded-pill px-3 py-1">
                                                 Verify
                                             </a>
                                         </td>
@@ -224,19 +224,19 @@ include_once __DIR__ . '/../includes/header.php';
             <div class="card-modern p-4 border bg-white shadow-sm">
                 <h5 class="fw-bold font-heading mb-3 text-dark">Moderation Tools</h5>
                 <div class="d-grid gap-2">
-                    <a href="<?= e(BASE_URL) ?>/admin/verify-alumni.php" class="btn btn-light border text-start d-flex justify-content-between align-items-center py-2 px-3 rounded-3">
+                    <a href="<?= e(BASE_URL) ?>/admin/verify-alumni" class="btn btn-light border text-start d-flex justify-content-between align-items-center py-2 px-3 rounded-3">
                         <span class="small fw-semibold"><i class="bi bi-patch-check text-success me-2"></i>Verify Alumni Credentials</span>
                         <i class="bi bi-chevron-right text-muted small"></i>
                     </a>
-                    <a href="<?= e(BASE_URL) ?>/admin/manage-users.php" class="btn btn-light border text-start d-flex justify-content-between align-items-center py-2 px-3 rounded-3">
+                    <a href="<?= e(BASE_URL) ?>/admin/manage-users" class="btn btn-light border text-start d-flex justify-content-between align-items-center py-2 px-3 rounded-3">
                         <span class="small fw-semibold"><i class="bi bi-person-gear text-primary me-2"></i>User & Role Management</span>
                         <i class="bi bi-chevron-right text-muted small"></i>
                     </a>
-                    <a href="<?= e(BASE_URL) ?>/admin/manage-posts.php" class="btn btn-light border text-start d-flex justify-content-between align-items-center py-2 px-3 rounded-3">
+                    <a href="<?= e(BASE_URL) ?>/admin/manage-posts" class="btn btn-light border text-start d-flex justify-content-between align-items-center py-2 px-3 rounded-3">
                         <span class="small fw-semibold"><i class="bi bi-chat-square-dots text-info me-2"></i>Content & Post Moderation</span>
                         <i class="bi bi-chevron-right text-muted small"></i>
                     </a>
-                    <a href="<?= e(BASE_URL) ?>/admin/manage-jobs.php" class="btn btn-light border text-start d-flex justify-content-between align-items-center py-2 px-3 rounded-3">
+                    <a href="<?= e(BASE_URL) ?>/admin/manage-jobs" class="btn btn-light border text-start d-flex justify-content-between align-items-center py-2 px-3 rounded-3">
                         <span class="small fw-semibold"><i class="bi bi-briefcase text-warning me-2"></i>Job Listings Moderation</span>
                         <i class="bi bi-chevron-right text-muted small"></i>
                     </a>

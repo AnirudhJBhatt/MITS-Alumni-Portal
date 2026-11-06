@@ -31,10 +31,8 @@ include_once __DIR__ . '/../includes/header.php';
                 
                 <!-- Brand Header -->
                 <div class="mb-4">
-                    <div class="brand-icon-box mx-auto mb-3" style="width: 58px; height: 58px; font-size: 1.75rem; border-radius: 14px;">
-                        <i class="bi bi-mortarboard-fill"></i>
-                    </div>
-                    <h3 class="fw-bold font-heading mb-1 text-dark">Welcome to <span class="text-gradient">MITS Alumni</span></h3>
+                    <img src="<?= e(BASE_URL) ?>/assets/images/OSAM%20logo.jpg" alt="<?= e(APP_NAME) ?> Logo" class="brand-logo-img mx-auto mb-3 shadow-sm d-block" style="width: 64px; height: 64px; border-radius: 14px;">
+                    <h3 class="fw-bold font-heading mb-1 text-dark">Welcome to <span class="text-gradient"><?= e(APP_NAME) ?></span></h3>
                     <p class="text-secondary small mb-0">Sign in with your Google account to connect with alumni, discover career openings, and give back.</p>
                 </div>
 
