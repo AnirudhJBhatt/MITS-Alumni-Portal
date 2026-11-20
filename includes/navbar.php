@@ -14,8 +14,10 @@ $user = current_user();
     <div class="container">
         <!-- Brand Logo -->
         <a class="navbar-brand d-flex align-items-center gap-2" href="<?= e(BASE_URL) ?>/">
+            <img src="<?= e(BASE_URL) ?>/assets/images/MITS%20Logo.png" alt="MITS Logo" class="college-logo-img">
+            <span class="vr mx-1 opacity-25 d-none d-sm-inline"></span>
             <img src="<?= e(BASE_URL) ?>/assets/images/OSAM%20logo.jpg" alt="<?= e(APP_NAME) ?> Logo" class="brand-logo-img">
-            <div>
+            <div class="d-none d-lg-block">
                 <span class="fw-bold tracking-tight text-gradient"><?= e(APP_NAME) ?></span>
             </div>
         </a>

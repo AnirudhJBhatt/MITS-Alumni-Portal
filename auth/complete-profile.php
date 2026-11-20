@@ -115,7 +115,6 @@ $current_page = 'complete-profile';
 // List of MITS Departments
 $departments = [
     'Computer Science & Engineering',
-    'Computer Science & Technology',
     'Artificial Intelligence & Data Science',
     'Computer Science & Engineering (AI)',
     'Computer Science & Engineering (Cyber Security)',
@@ -124,8 +123,6 @@ $departments = [
     'Mechanical Engineering',
     'Civil Engineering',
     'Master of Computer Applications (MCA)',
-    'Master of Business Administration (MBA)',
-    'Other'
 ];
 
 include_once __DIR__ . '/../includes/header.php';

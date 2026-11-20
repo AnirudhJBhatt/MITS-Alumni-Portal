@@ -115,6 +115,23 @@ h1, h2, h3, h4, h5, h6, .font-heading {
     box-shadow: 0 4px 12px rgba(216, 21, 28, 0.2);
 }
 
+.college-logo-img {
+    height: 38px;
+    width: auto;
+    max-width: 140px;
+    object-fit: contain;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 3px 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.college-logo-img:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(216, 21, 28, 0.15);
+}
+
 .navbar .nav-link {
     font-weight: 500;
     color: var(--text-secondary);

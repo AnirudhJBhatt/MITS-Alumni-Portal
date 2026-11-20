@@ -16,49 +16,148 @@ include_once __DIR__ . '/includes/header.php';
 ?>
 
 <!-- ============================================================== -->
-<!-- 1. Hero Section                                                -->
+<!-- 1. Hero Section with Carousel Background                        -->
 <!-- ============================================================== -->
-<section class="hero-section py-5">
-    <div class="container">
+<section class="hero-section position-relative overflow-hidden py-5 d-flex align-items-center" style="min-height: 580px; background-color: #0f172a;">
+    <!-- Background Carousel -->
+    <div id="heroBgCarousel" class="carousel slide carousel-fade position-absolute top-0 start-0 w-100 h-100" data-bs-ride="carousel" data-bs-interval="5000" style="z-index: 0;">
+        <!-- Slide Indicators -->
+        <div class="carousel-indicators mb-3" style="z-index: 3;">
+            <button type="button" data-bs-target="#heroBgCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="MITS Main Campus"></button>
+            <button type="button" data-bs-target="#heroBgCarousel" data-bs-slide-to="1" aria-label="Academic Complex"></button>
+            <button type="button" data-bs-target="#heroBgCarousel" data-bs-slide-to="2" aria-label="Campus Grounds"></button>
+            <button type="button" data-bs-target="#heroBgCarousel" data-bs-slide-to="3" aria-label="Central Library"></button>
+            <button type="button" data-bs-target="#heroBgCarousel" data-bs-slide-to="4" aria-label="Campus Community"></button>
+        </div>
+
+        <!-- Carousel Slides -->
+        <div class="carousel-inner w-100 h-100">
+            <!-- Slide 1: Local Campus Photo -->
+            <div class="carousel-item active w-100 h-100">
+                <img src="<?= e(BASE_URL) ?>/assets/images/College%20Image.jpeg" alt="Muthoot Institute of Technology and Science Campus" class="d-block w-100 h-100 object-fit-cover">
+            </div>
+
+            <!-- Slide 2: Academic Complex -->
+            <div class="carousel-item w-100 h-100">
+                <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=1920&auto=format&fit=crop&q=80" alt="MITS Academic Complex" class="d-block w-100 h-100 object-fit-cover">
+            </div>
+
+            <!-- Slide 3: Campus Grounds & Architecture -->
+            <div class="carousel-item w-100 h-100">
+                <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1920&auto=format&fit=crop&q=80" alt="MITS Campus Grounds" class="d-block w-100 h-100 object-fit-cover">
+            </div>
+
+            <!-- Slide 4: Central Library & Research -->
+            <div class="carousel-item w-100 h-100">
+                <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1920&auto=format&fit=crop&q=80" alt="MITS Central Library" class="d-block w-100 h-100 object-fit-cover">
+            </div>
+
+            <!-- Slide 5: Student & Alumni Community -->
+            <div class="carousel-item w-100 h-100">
+                <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1920&auto=format&fit=crop&q=80" alt="MITS Alumni and Students" class="d-block w-100 h-100 object-fit-cover">
+            </div>
+        </div>
+
+        <!-- Carousel Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroBgCarousel" data-bs-slide="prev" style="z-index: 3; width: 5%;">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroBgCarousel" data-bs-slide="next" style="z-index: 3; width: 5%;">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <!-- Gradient Dark Overlay for Superior Contrast -->
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.90) 0%, rgba(15, 23, 42, 0.74) 50%, rgba(15, 23, 42, 0.90) 100%); z-index: 1; pointer-events: none;"></div>
+
+    <!-- Hero Content Layer -->
+    <div class="container position-relative py-5 my-auto" style="z-index: 2;">
         <div class="row align-items-center g-5">
-            <div class="col-lg-7 text-center text-lg-start">
-                <div class="d-inline-flex align-items-center gap-2 badge-hero rounded-pill px-3 py-1 mb-3">
-                    <span class="badge bg-primary text-white rounded-pill px-2">Official</span>
-                    <span class="small">Old Student Association of MITS (OSAM)</span>
+            <div class="col-lg-8 text-center text-lg-start">
+                <div class="d-inline-flex align-items-center gap-2 rounded-pill px-3 py-1 mb-3 text-white border border-white border-opacity-25" style="background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
+                    <span class="badge bg-danger text-white rounded-pill px-2">Official</span>
+                    <span class="small fw-semibold">Old Student Association of MITS (OSAM)</span>
                 </div>
-                <h1 class="display-4 fw-bold font-heading mb-3 text-dark">
-                    Empowering the <span class="text-gradient">MITS Alumni</span> Community
+                <h1 class="display-4 fw-bold font-heading mb-3 text-white">
+                    Empowering the <span style="background: linear-gradient(135deg, #ff6b6b 0%, #ffa8a8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">MITS Alumni</span> Community
                 </h1>
-                <p class="lead text-secondary mb-4 pe-lg-5">
+                <p class="lead text-light text-opacity-75 mb-4 pe-lg-5" style="line-height: 1.7;">
                     Reconnect with classmates, unlock exclusive career opportunities, mentor current students, and expand your global professional network across top industries.
                 </p>
                 <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start mb-4">
                     <?php if (is_logged_in()): ?>
-                        <a href="<?= e(BASE_URL) ?>/feed" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm">
+                        <a href="<?= e(BASE_URL) ?>/feed" class="btn btn-primary btn-lg rounded-pill px-4 shadow">
                             <i class="bi bi-collection-play me-2"></i>Go to Community Feed
                         </a>
-                        <a href="<?= e(BASE_URL) ?>/directory" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
+                        <a href="<?= e(BASE_URL) ?>/directory" class="btn btn-outline-light btn-lg rounded-pill px-4">
                             <i class="bi bi-people me-2"></i>Explore Directory
                         </a>
                     <?php else: ?>
-                        <a href="<?= e(BASE_URL) ?>/auth/login" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm">
+                        <a href="<?= e(BASE_URL) ?>/auth/login" class="btn btn-primary btn-lg rounded-pill px-4 shadow">
                             <i class="bi bi-google me-2"></i>Join with Google Sign-In
                         </a>
-                        <a href="#about" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
+                        <a href="#about" class="btn btn-outline-light btn-lg rounded-pill px-4">
                             <i class="bi bi-info-circle me-2"></i>Learn About OSAM
                         </a>
                     <?php endif; ?>
                 </div>
-            </div>
 
-            <div class="col-lg-5">
-                <div class="card card-modern border-0 shadow-lg overflow-hidden p-2 bg-white position-relative">
-                    <img src="assets/images/College Image.jpeg" alt="Muthoot Institute of Technology and Science Campus" class="img-fluid rounded-4 w-100 object-fit-cover shadow-sm" style="height: 380px;">
+                <!-- Campus Feature Highlights Badges -->
+                <div class="row g-3 pt-2 text-white">
+                    <div class="col-auto">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-check-circle-fill text-danger"></i>
+                            <span class="small text-light text-opacity-90">Autonomous Institution</span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-award-fill text-warning"></i>
+                            <span class="small text-light text-opacity-90">NAAC 'A+' & NBA Accredited</span>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-globe text-info"></i>
+                            <span class="small text-light text-opacity-90">Global Alumni Network</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- Glassmorphism Campus Info Card -->
+            <!-- <div class="col-lg-4 d-none d-lg-block">
+                <div class="card border-0 rounded-4 p-4 text-white shadow-lg" style="background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.15) !important;">
+                    <div class="d-flex align-items-center gap-3 pb-3 mb-3 border-bottom border-white border-opacity-10">
+                        <img src="<?= e(BASE_URL) ?>/assets/images/OSAM%20logo.jpg" alt="OSAM Logo" class="brand-logo-img rounded-3" style="width: 48px; height: 48px; object-fit: cover;">
+                        <div>
+                            <h6 class="fw-bold text-white mb-0 font-heading">OSAM Portal</h6>
+                            <small class="text-white-50">MITS Alumni Association</small>
+                        </div>
+                    </div>
+                    <p class="small text-white-50 mb-3">
+                        Connecting graduates from Muthoot Institute of Technology and Science across the globe.
+                    </p>
+                    <div class="d-flex flex-column gap-2 small">
+                        <div class="d-flex align-items-center justify-content-between p-2 rounded-3" style="background: rgba(255, 255, 255, 0.07);">
+                            <span class="text-white-50"><i class="bi bi-mortarboard me-2 text-danger"></i>Affiliation</span>
+                            <span class="fw-semibold text-white">APJ KTU</span>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between p-2 rounded-3" style="background: rgba(255, 255, 255, 0.07);">
+                            <span class="text-white-50"><i class="bi bi-geo-alt me-2 text-danger"></i>Location</span>
+                            <span class="fw-semibold text-white">Varikoli, Kochi</span>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between p-2 rounded-3" style="background: rgba(255, 255, 255, 0.07);">
+                            <span class="text-white-50"><i class="bi bi-shield-check me-2 text-danger"></i>Status</span>
+                            <span class="badge bg-success bg-opacity-75 text-white">Autonomous</span>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
         </div>
     </div>
-
 </section>
 
 <!-- ============================================================== -->

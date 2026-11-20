@@ -14,7 +14,9 @@ require_once __DIR__ . '/../config/config.php';
         <div class="row g-4 justify-content-between">
             <div class="col-lg-5 col-md-6">
                 <div class="d-flex align-items-center gap-2 mb-3">
-                    <img src="<?= e(BASE_URL) ?>/assets/images/OSAM%20logo.jpg" alt="<?= e(APP_NAME) ?> Logo" class="brand-logo-img" style="width: 42px; height: 42px;">
+                    <img src="<?= e(BASE_URL) ?>/assets/images/MITS%20Logo.png" alt="MITS Logo" class="college-logo-img" style="height: 40px;">
+                    <span class="vr opacity-25"></span>
+                    <img src="<?= e(BASE_URL) ?>/assets/images/OSAM%20logo.jpg" alt="<?= e(APP_NAME) ?> Logo" class="brand-logo-img" style="width: 40px; height: 40px;">
                     <span class="fs-5 fw-bold text-dark"><?= e(APP_NAME) ?></span>
                 </div>
                 <p class="text-secondary small pe-lg-4 mb-3">
