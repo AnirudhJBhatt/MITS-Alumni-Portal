@@ -42,7 +42,7 @@ $current_page = $current_page ?? basename($_SERVER['PHP_SELF'], '.php');
     <!-- Custom Modern Styling -->
     <link rel="stylesheet" href="<?= e(BASE_URL) ?>/assets/css/style.css?v=<?= APP_VERSION ?>">
     <?php if (($current_page ?? '') === 'admin'): ?>
-    <link rel="stylesheet" href="<?= e(BASE_URL) ?>/assets/css/admin.css?v=<?= APP_VERSION ?>">
+    <link rel="stylesheet" href="<?= e(BASE_URL) ?>/assets/css/style.css?v=<?= APP_VERSION ?>">
     <?php endif; ?>
 
     <!-- Google Identity Services (GIS) Library -->

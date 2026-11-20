@@ -103,8 +103,7 @@ MITS-Alumni-Portal/
 │
 ├── assets/
 │   ├── css/
-│   │   ├── style.css          # Modern custom CSS in MITS Red (#d8151c) and White
-│   │   └── admin.css          # Admin-specific styling
+│   │   └── style.css          # Modern custom CSS in MITS Red (#d8151c) and White
 │   ├── js/
 │   │   ├── main.js            # General UI helpers, toast alerts, notification poller
 │   │   ├── auth.js            # GIS token receiver and AJAX dispatcher
