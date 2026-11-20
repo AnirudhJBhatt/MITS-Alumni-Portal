@@ -37,27 +37,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Handle optional cover image file upload
-        if (isset($_FILES['cover_file']) && $_FILES['cover_file']['error'] === UPLOAD_ERR_OK) {
-            $file_tmp = $_FILES['cover_file']['tmp_name'];
-            $file_size = $_FILES['cover_file']['size'];
-
-            if ($file_size > MAX_UPLOAD_SIZE) {
-                set_flash('danger', 'Cover image exceeds 5 MB limit.');
-                header('Location: ' . BASE_URL . '/admin/manage-gallery.php');
-                exit;
+        if (isset($_FILES['cover_file']) && $_FILES['cover_file']['error'] !== UPLOAD_ERR_NO_FILE) {
+            $gallery_dir = UPLOAD_DIR . '/gallery';
+            if (!is_dir($gallery_dir)) {
+                @mkdir($gallery_dir, 0775, true);
             }
 
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mime_type = finfo_file($finfo, $file_tmp);
-            finfo_close($finfo);
+            if ($_FILES['cover_file']['error'] === UPLOAD_ERR_OK) {
+                $file_tmp = $_FILES['cover_file']['tmp_name'];
+                $file_size = $_FILES['cover_file']['size'];
 
-            $allowed_mimes = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
-            if (array_key_exists($mime_type, $allowed_mimes)) {
-                $ext = $allowed_mimes[$mime_type];
-                $filename = 'event_cover_' . bin2hex(random_bytes(8)) . '.' . $ext;
-                $target_path = UPLOAD_DIR . '/gallery/' . $filename;
-                if (move_uploaded_file($file_tmp, $target_path)) {
-                    $cover_url = BASE_URL . '/uploads/gallery/' . $filename;
+                if ($file_size > MAX_UPLOAD_SIZE) {
+                    set_flash('danger', 'Cover image exceeds 5 MB limit.');
+                    header('Location: ' . BASE_URL . '/admin/manage-gallery.php');
+                    exit;
+                }
+
+                $mime_type = '';
+                if (function_exists('finfo_open')) {
+                    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                    $mime_type = finfo_file($finfo, $file_tmp);
+                    finfo_close($finfo);
+                } elseif (function_exists('mime_content_type')) {
+                    $mime_type = mime_content_type($file_tmp);
+                }
+
+                $img_info = @getimagesize($file_tmp);
+                if ($img_info && !empty($img_info['mime'])) {
+                    $mime_type = $img_info['mime'];
+                }
+
+                $allowed_mimes = [
+                    'image/jpeg' => 'jpg',
+                    'image/jpg' => 'jpg',
+                    'image/pjpeg' => 'jpg',
+                    'image/png' => 'png',
+                    'image/x-png' => 'png',
+                    'image/webp' => 'webp',
+                    'image/gif' => 'gif'
+                ];
+
+                if (array_key_exists($mime_type, $allowed_mimes)) {
+                    $ext = $allowed_mimes[$mime_type];
+                    $filename = 'event_cover_' . bin2hex(random_bytes(8)) . '.' . $ext;
+                    $target_path = $gallery_dir . '/' . $filename;
+                    if (move_uploaded_file($file_tmp, $target_path)) {
+                        @chmod($target_path, 0664);
+                        $cover_url = BASE_URL . '/uploads/gallery/' . $filename;
+                    }
                 }
             }
         }
@@ -92,38 +119,105 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
+        $gallery_dir = UPLOAD_DIR . '/gallery';
+        if (!is_dir($gallery_dir)) {
+            @mkdir($gallery_dir, 0775, true);
+        }
+
         $uploaded_count = 0;
-        $allowed_mimes = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp', 'image/gif' => 'gif'];
+        $errors = [];
+        $allowed_mimes = [
+            'image/jpeg' => 'jpg',
+            'image/jpg' => 'jpg',
+            'image/pjpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/x-png' => 'png',
+            'image/webp' => 'webp',
+            'image/gif' => 'gif'
+        ];
 
         // 1. Process File Uploads (Multiple files support)
         if (isset($_FILES['photos']) && is_array($_FILES['photos']['name'])) {
             $total_files = count($_FILES['photos']['name']);
             for ($i = 0; $i < $total_files; $i++) {
-                if ($_FILES['photos']['error'][$i] === UPLOAD_ERR_OK) {
-                    $file_tmp = $_FILES['photos']['tmp_name'][$i];
-                    $file_size = $_FILES['photos']['size'][$i];
+                $err_code = $_FILES['photos']['error'][$i];
+                $file_name = htmlspecialchars($_FILES['photos']['name'][$i] ?? "Photo #$i");
 
-                    if ($file_size <= MAX_UPLOAD_SIZE) {
-                        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-                        $mime_type = finfo_file($finfo, $file_tmp);
-                        finfo_close($finfo);
+                if ($err_code === UPLOAD_ERR_NO_FILE) {
+                    continue;
+                }
 
-                        if (array_key_exists($mime_type, $allowed_mimes)) {
-                            $ext = $allowed_mimes[$mime_type];
-                            $filename = 'photo_' . $event_id . '_' . bin2hex(random_bytes(8)) . '.' . $ext;
-                            $target_path = UPLOAD_DIR . '/gallery/' . $filename;
-
-                            if (move_uploaded_file($file_tmp, $target_path)) {
-                                $url = BASE_URL . '/uploads/gallery/' . $filename;
-                                db_execute($conn,
-                                    "INSERT INTO event_photos (event_id, photo_url, caption, uploaded_by) VALUES (?, ?, ?, ?)",
-                                    "issi",
-                                    [$event_id, $url, $caption, $current_user_id]
-                                );
-                                $uploaded_count++;
-                            }
-                        }
+                if ($err_code !== UPLOAD_ERR_OK) {
+                    switch ($err_code) {
+                        case UPLOAD_ERR_INI_SIZE:
+                            $errors[] = "'{$file_name}' exceeds server's upload_max_filesize limit in php.ini (" . ini_get('upload_max_filesize') . ").";
+                            break;
+                        case UPLOAD_ERR_FORM_SIZE:
+                            $errors[] = "'{$file_name}' exceeds form file size limit.";
+                            break;
+                        case UPLOAD_ERR_PARTIAL:
+                            $errors[] = "'{$file_name}' was only partially uploaded.";
+                            break;
+                        case UPLOAD_ERR_NO_TMP_DIR:
+                            $errors[] = "Missing temporary upload folder on server.";
+                            break;
+                        case UPLOAD_ERR_CANT_WRITE:
+                            $errors[] = "Failed to write '{$file_name}' to disk.";
+                            break;
+                        default:
+                            $errors[] = "Upload error (Code $err_code) on '{$file_name}'.";
+                            break;
                     }
+                    continue;
+                }
+
+                $file_tmp = $_FILES['photos']['tmp_name'][$i];
+                $file_size = $_FILES['photos']['size'][$i];
+
+                if ($file_size > MAX_UPLOAD_SIZE) {
+                    $errors[] = "'{$file_name}' exceeds the 5 MB limit (" . round($file_size / (1024 * 1024), 2) . " MB).";
+                    continue;
+                }
+
+                $mime_type = '';
+                if (function_exists('finfo_open')) {
+                    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                    $mime_type = finfo_file($finfo, $file_tmp);
+                    finfo_close($finfo);
+                } elseif (function_exists('mime_content_type')) {
+                    $mime_type = mime_content_type($file_tmp);
+                }
+
+                $img_info = @getimagesize($file_tmp);
+                if ($img_info && !empty($img_info['mime'])) {
+                    $mime_type = $img_info['mime'];
+                }
+
+                if (!array_key_exists($mime_type, $allowed_mimes)) {
+                    $errors[] = "'{$file_name}' has unsupported format (detected: " . ($mime_type ?: 'unknown') . "). Please upload JPG, PNG, or WebP.";
+                    continue;
+                }
+
+                if (!is_writable($gallery_dir)) {
+                    $errors[] = "Server permission error: uploads/gallery/ is not writable by web server. Run 'sudo chown -R www-data:www-data " . ROOT_PATH . "/uploads && sudo chmod -R 775 " . ROOT_PATH . "/uploads' on your VPS.";
+                    break;
+                }
+
+                $ext = $allowed_mimes[$mime_type];
+                $filename = 'photo_' . $event_id . '_' . bin2hex(random_bytes(8)) . '.' . $ext;
+                $target_path = $gallery_dir . '/' . $filename;
+
+                if (move_uploaded_file($file_tmp, $target_path)) {
+                    @chmod($target_path, 0664);
+                    $url = BASE_URL . '/uploads/gallery/' . $filename;
+                    db_execute($conn,
+                        "INSERT INTO event_photos (event_id, photo_url, caption, uploaded_by) VALUES (?, ?, ?, ?)",
+                        "issi",
+                        [$event_id, $url, $caption, $current_user_id]
+                    );
+                    $uploaded_count++;
+                } else {
+                    $errors[] = "Could not move '{$file_name}' to target directory. Check server permissions and disk space.";
                 }
             }
         }
@@ -139,9 +233,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($uploaded_count > 0) {
-            set_flash('success', "Successfully added $uploaded_count photo(s) to \"{$event['title']}\".");
+            $msg = "Successfully added $uploaded_count photo(s) to \"{$event['title']}\".";
+            if (!empty($errors)) {
+                $msg .= "<br><span class='small'>" . implode('<br>', $errors) . "</span>";
+                set_flash('warning', $msg);
+            } else {
+                set_flash('success', $msg);
+            }
         } else {
-            set_flash('warning', 'No valid photos were uploaded. Ensure files are JPG, PNG, or WebP under 5 MB.');
+            $err_msg = !empty($errors) 
+                ? implode('<br>', $errors) 
+                : 'No valid photos were uploaded. Ensure files are JPG, PNG, or WebP under 5 MB.';
+            set_flash('danger', $err_msg);
         }
 
         header('Location: ' . BASE_URL . '/admin/manage-gallery.php?event_id=' . $event_id);
@@ -234,6 +337,28 @@ include_once __DIR__ . '/../includes/header.php';
             </a>
         </div>
     </div>
+
+    <?php
+    $gallery_check_dir = UPLOAD_DIR . '/gallery';
+    if (!is_dir($gallery_check_dir)) {
+        @mkdir($gallery_check_dir, 0775, true);
+    }
+    if (!is_writable($gallery_check_dir)):
+    ?>
+        <div class="alert alert-warning border-0 shadow-sm rounded-4 p-3 mb-4 d-flex align-items-start gap-3">
+            <i class="bi bi-exclamation-triangle-fill fs-3 text-warning flex-shrink-0"></i>
+            <div>
+                <h6 class="fw-bold mb-1 text-dark">Server Permission Notice: Gallery Folder Not Writable</h6>
+                <p class="small text-secondary mb-2">
+                    The web server process (e.g. <code>www-data</code>) does not have write access to <code><?= e($gallery_check_dir) ?></code>. Photo uploads will fail until permissions are granted on your VPS.
+                </p>
+                <div class="bg-dark text-white rounded-3 p-2 small font-monospace user-select-all mb-1">
+                    sudo chown -R www-data:www-data <?= e(ROOT_PATH) ?>/uploads && sudo chmod -R 775 <?= e(ROOT_PATH) ?>/uploads
+                </div>
+                <span class="text-secondary small">Run the command above via SSH in your VPS terminal, then reload this page.</span>
+            </div>
+        </div>
+    <?php endif; ?>
 
     <!-- Dual Form Row: Create Event + Upload Photos -->
     <div class="row g-4 mb-5">
