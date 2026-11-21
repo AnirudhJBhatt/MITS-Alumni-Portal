@@ -40,42 +40,48 @@ $user = current_user();
                         <i class="bi bi-images me-1"></i>Gallery
                     </a>
                 </li>
-                <?php if ($logged_in): ?>
+                <?php if ($logged_in && (is_verified() || is_admin())): ?>
                     <li class="nav-item">
                         <a class="nav-link px-3 <?= ($current_page === 'feed') ? 'active' : '' ?>" href="<?= e(BASE_URL) ?>/feed">
                             <i class="bi bi-collection-play me-1"></i>Feed
                         </a>
                     </li>
-                <?php endif; ?>
-                <li class="nav-item">
-                    <a class="nav-link px-3 <?= ($current_page === 'directory') ? 'active' : '' ?>" href="<?= e(BASE_URL) ?>/directory">
-                        <i class="bi bi-people me-1"></i>Directory
-                    </a>
-                </li>
-                <?php if ($logged_in): ?>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 <?= ($current_page === 'directory') ? 'active' : '' ?>" href="<?= e(BASE_URL) ?>/directory">
+                            <i class="bi bi-people me-1"></i>Directory
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link px-3 <?= ($current_page === 'network') ? 'active' : '' ?>" href="<?= e(BASE_URL) ?>/network">
                             <i class="bi bi-diagram-3 me-1"></i>Network
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 <?= ($current_page === 'jobs') ? 'active' : '' ?>" href="<?= e(BASE_URL) ?>/jobs">
+                            <i class="bi bi-briefcase me-1"></i>Jobs
+                        </a>
+                    </li>
+                <?php elseif ($logged_in && !is_verified() && !is_admin()): ?>
+                    <li class="nav-item">
+                        <a class="nav-link px-3 text-warning fw-semibold <?= ($current_page === 'pending-verification') ? 'active' : '' ?>" href="<?= e(BASE_URL) ?>/auth/pending-verification.php">
+                            <i class="bi bi-hourglass-split me-1"></i>Verification Status
+                        </a>
+                    </li>
                 <?php endif; ?>
-                <li class="nav-item">
-                    <a class="nav-link px-3 <?= ($current_page === 'jobs') ? 'active' : '' ?>" href="<?= e(BASE_URL) ?>/jobs">
-                        <i class="bi bi-briefcase me-1"></i>Jobs
-                    </a>
-                </li>
             </ul>
 
             <!-- Right-Hand Side (Auth / User Profile / Actions) -->
             <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
                 <?php if ($logged_in): ?>
-                    <!-- Notification Bell -->
-                    <a href="<?= e(BASE_URL) ?>/notifications" class="btn btn-icon btn-light rounded-circle position-relative me-1" title="Notifications">
-                        <i class="bi bi-bell fs-5 text-secondary"></i>
-                        <span id="nav-notif-badge" class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle d-none">
-                            <span class="visually-hidden">New notifications</span>
-                        </span>
-                    </a>
+                    <?php if (is_verified() || is_admin()): ?>
+                        <!-- Notification Bell -->
+                        <a href="<?= e(BASE_URL) ?>/notifications" class="btn btn-icon btn-light rounded-circle position-relative me-1" title="Notifications">
+                            <i class="bi bi-bell fs-5 text-secondary"></i>
+                            <span id="nav-notif-badge" class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle d-none">
+                                <span class="visually-hidden">New notifications</span>
+                            </span>
+                        </a>
+                    <?php endif; ?>
 
                     <!-- User Profile Dropdown -->
                     <div class="dropdown">
@@ -94,21 +100,35 @@ $user = current_user();
                                 <div class="small text-muted text-truncate"><?= e($user['email'] ?? '') ?></div>
                                 <div class="mt-1"><?= get_status_badge($user['status'] ?? 'pending') ?></div>
                             </li>
-                            <li>
-                                <a class="dropdown-item py-2" href="<?= e(BASE_URL) ?>/profile">
-                                    <i class="bi bi-person-badge me-2 text-primary"></i>My Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item py-2" href="<?= e(BASE_URL) ?>/edit-profile">
-                                    <i class="bi bi-pencil-square me-2 text-secondary"></i>Edit Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item py-2" href="<?= e(BASE_URL) ?>/post-job">
-                                    <i class="bi bi-plus-circle me-2 text-success"></i>Post a Job
-                                </a>
-                            </li>
+
+                            <?php if (is_verified() || is_admin()): ?>
+                                <li>
+                                    <a class="dropdown-item py-2" href="<?= e(BASE_URL) ?>/profile">
+                                        <i class="bi bi-person-badge me-2 text-primary"></i>My Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2" href="<?= e(BASE_URL) ?>/edit-profile">
+                                        <i class="bi bi-pencil-square me-2 text-secondary"></i>Edit Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2" href="<?= e(BASE_URL) ?>/post-job">
+                                        <i class="bi bi-plus-circle me-2 text-success"></i>Post a Job
+                                    </a>
+                                </li>
+                            <?php else: ?>
+                                <li>
+                                    <a class="dropdown-item py-2 text-warning fw-semibold" href="<?= e(BASE_URL) ?>/auth/pending-verification.php">
+                                        <i class="bi bi-hourglass-split me-2"></i>Verification Status
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2" href="<?= e(BASE_URL) ?>/auth/complete-profile.php">
+                                        <i class="bi bi-pencil-square me-2 text-secondary"></i>Edit Submitted Info
+                                    </a>
+                                </li>
+                            <?php endif; ?>
 
                             <?php if (is_admin()): ?>
                                 <li><hr class="dropdown-divider my-2"></li>

@@ -100,8 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($stmt) {
             $_SESSION['user']['profile_completed'] = true;
-            set_flash('success', 'Profile saved successfully! Welcome to MITS Connect.');
-            header('Location: ' . BASE_URL . '/index.php');
+
+            if (is_admin() || ($_SESSION['user']['status'] ?? '') === 'verified') {
+                set_flash('success', 'Profile updated successfully! Welcome to MITS Connect.');
+                header('Location: ' . BASE_URL . '/feed.php');
+            } else {
+                set_flash('success', 'Profile details submitted successfully! Your account is now awaiting college administration verification.');
+                header('Location: ' . BASE_URL . '/auth/pending-verification.php');
+            }
             exit;
         } else {
             $errors[] = 'Failed to save profile. Please try again.';

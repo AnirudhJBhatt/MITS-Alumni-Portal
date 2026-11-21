@@ -6,7 +6,7 @@
 
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/config/db.php';
-require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/auth_check.php';
 
 $page_title = 'Career & Job Board';
 $page_description = 'Discover hiring opportunities, job referrals, and internships shared by MITS alumni and recruiters.';

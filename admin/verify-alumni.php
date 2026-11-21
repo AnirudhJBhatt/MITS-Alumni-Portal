@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'verify') {
         db_execute($conn, "UPDATE users SET status = 'verified' WHERE id = ?", "i", [$target_user_id]);
         
-        // Send congratulatory notification to the alumnus
+        // Send congratulatory in-app notification to the alumnus
         $msg = 'Congratulations ' . $target_user['full_name'] . '! Your alumni credentials have been verified by the MITS administration.';
         db_execute($conn,
             "INSERT INTO notifications (user_id, actor_id, type, message) VALUES (?, ?, 'admin_verification', ?)",
@@ -40,7 +40,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             [$target_user_id, $current_admin['id'], $msg]
         );
 
-        set_flash('success', 'Candidate ' . e($target_user['full_name']) . ' has been successfully verified!');
+        // Send official verification email to the alumnus
+        $email_sent = send_alumni_verified_email($target_user['email'], $target_user['full_name']);
+
+        if ($email_sent) {
+            set_flash('success', 'Candidate ' . e($target_user['full_name']) . ' has been verified and an activation email was sent to ' . e($target_user['email']) . '!');
+        } else {
+            set_flash('success', 'Candidate ' . e($target_user['full_name']) . ' has been verified! (Email notification logged)');
+        }
     } elseif ($action === 'reject') {
         db_execute($conn, "UPDATE users SET status = 'rejected' WHERE id = ?", "i", [$target_user_id]);
 

@@ -54,7 +54,24 @@ define('GOOGLE_CLIENT_SECRET', env('GOOGLE_CLIENT_SECRET', ''));
 // 6. Super Administrator Email
 define('SUPER_ADMIN_EMAIL', env('SUPER_ADMIN_EMAIL', 'admin@mits.ac.in'));
 
-// 7. Timezone
+// 7. Email Domain Restriction Policy
+$raw_domains = (string)env('COLLEGE_EMAIL_DOMAINS', 'mgits.ac.in,mits.ac.in');
+$parsed_domains = array_values(array_filter(array_map('trim', explode(',', strtolower($raw_domains)))));
+define('COLLEGE_EMAIL_DOMAINS', !empty($parsed_domains) ? $parsed_domains : ['mgits.ac.in', 'mits.ac.in']);
+define('BLOCK_COLLEGE_EMAIL_DOMAIN', (bool)env('BLOCK_COLLEGE_EMAIL_DOMAIN', true));
+define('RESTRICT_TO_COLLEGE_DOMAIN', (bool)env('RESTRICT_TO_COLLEGE_DOMAIN', false));
+
+// 8. SMTP & Email Notification Settings
+define('MAIL_DRIVER', env('MAIL_DRIVER', 'smtp'));
+define('MAIL_HOST', env('MAIL_HOST', 'smtp.gmail.com'));
+define('MAIL_PORT', (int)env('MAIL_PORT', 587));
+define('MAIL_ENCRYPTION', env('MAIL_ENCRYPTION', 'tls'));
+define('MAIL_USERNAME', env('MAIL_USERNAME', ''));
+define('MAIL_PASSWORD', env('MAIL_PASSWORD', ''));
+define('MAIL_FROM_ADDRESS', env('MAIL_FROM_ADDRESS', 'noreply@mits.ac.in'));
+define('MAIL_FROM_NAME', env('MAIL_FROM_NAME', 'MITS Connect'));
+
+// 9. Timezone
 date_default_timezone_set(env('APP_TIMEZONE', 'Asia/Kolkata'));
 
 // 8. Security Headers

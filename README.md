@@ -11,48 +11,66 @@
 - **Surface & Background:** Pure White (`#ffffff`) and Crisp Light (`#fcfcfd`)
 - **Accents:** Soft rose-red tint (`#fef2f2`), subtle red border (`#fecaca`)
 - **Typography:** *Plus Jakarta Sans* (Headings) and *Inter* (Body)
+- **Institutional Branding:** Features the official MITS College Logo (`MITS Logo.png`) alongside the OSAM Alumni Association emblem (`OSAM logo.jpg`) in the header and footer.
 
 ---
 
 ## 🚀 Key Modules & Features
 
-1. **Authentication & Onboarding (Google Identity Services):**
-   - Seamless sign-in using Google Identity Services (GIS) with One-Tap prompt and standard GIS button.
-   - Server-side cryptographic token verification via Google's `oauth2.googleapis.com/tokeninfo` endpoint.
-   - Dedicated first-time onboarding wizard (`auth/complete-profile.php`) capturing college roll number, department, graduation batch, employer, and mentorship availability.
-   - Fast-login demo switchers for local testing in development mode (`APP_DEBUG = true`).
+1. **Authentication, Onboarding & Domain Policy:**
+   - **Google Identity Services (GIS):** Seamless sign-in using Google One-Tap and standard GIS button with server-side token verification via Google's `oauth2.googleapis.com/tokeninfo`.
+   - **Configurable Email Domain Policy:**
+     - `BLOCK_COLLEGE_EMAIL_DOMAIN=true`: Rejects student accounts (`@mgits.ac.in`) and forces permanent personal emails (e.g., Gmail) so alumni never lose portal access when college email IDs are revoked post-graduation.
+     - `RESTRICT_TO_COLLEGE_DOMAIN=true`: Optional inverse mode to restrict sign-ins strictly to institutional Google Workspace domains (`data-hd="mgits.ac.in"`).
+     - `SUPER_ADMIN_EMAIL` is exempt from domain rules.
+   - **First-Time Onboarding Wizard (`auth/complete-profile.php`):** Captures college roll number, department, graduation batch, employer, and mentorship availability.
+   - **Local Dev Switchers:** Fast-login demo buttons for instant testing when `APP_DEBUG = true`.
 
-2. **Alumni Profiles & Directory:**
-   - **Public Profile View (`profile.php`):** Highlighting department, passing batch, verified college status badge, current designation, employer, location, LinkedIn link, and mentorship status.
+2. **Strict Verification Gatekeeper & Holding Area:**
+   - **Gatekeeper Middleware (`includes/auth_check.php`):** Non-admin alumni cannot browse private member areas (Directory, Feed, Network, Jobs, Member Profiles) until their account is verified by the MITS administration.
+   - **Live Dynamic Status Refresh:** Queries the database on each request; the moment an administrator approves the candidate, access is unlocked instantly on their next click without requiring re-login.
+   - **Holding Screen (`auth/pending-verification.php`):** Displays submitted roll number, branch, and batch, with a "Check Verification Status" live re-query button, an "Edit Submitted Info" option, and clear status guidance.
+
+3. **Transactional Email Notifications (SMTP / PHP mail):**
+   - **Automated Verification Email (`includes/mailer.php`):** When an administrator verifies an alumnus in the queue, a branded, responsive HTML congratulatory email is automatically dispatched to their registered email address.
+   - **Zero-Dependency SMTP Socket Client:** Connects directly via TLS (port 587) or SSL (port 465) with base64 AUTH LOGIN, falling back to native PHP `mail()`.
+   - **Audit Logging:** Every email attempt is logged with timestamp, recipient, and status in `uploads/mail_logs/`.
+
+4. **Alumni Profiles & Directory:**
+   - **Public Profile View (`profile.php`):** Highlights department, graduation batch, verified college status badge, current designation, employer, location, LinkedIn link, and mentorship status.
    - **Profile Editor (`edit-profile.php`):** Photo upload with MIME verification (`image/jpeg`, `image/png`, `image/webp`), size cap, and live preview.
-   - **Alumni Directory (`directory.php`):** Real-time text search and multi-filtering by Department, Graduation Batch, and Mentors-only toggle.
+   - **Alumni Directory (`directory.php`):** Protected member directory with real-time text search and multi-filtering by Department, Graduation Batch, and Mentors-only toggle. Verified alumni are given priority ranking.
 
-3. **Networking & Connections Hub (`network.php`):**
+5. **Networking & Connections Hub (`network.php`):**
    - **My Connections:** Grid of active connections with email triggers and disconnect options.
    - **Invitations Received:** Pending connection requests with instant Accept / Decline actions.
    - **Sent Requests:** Outgoing outreach with Cancel/Withdraw options.
    - **Recommended Alumni:** Smart recommendation engine calculating relevance based on shared department, graduation batch ($\pm 2$ years), and mentorship.
 
-4. **Community Discussion Feed (`feed.php`):**
+6. **Community Discussion Feed (`feed.php`):**
    - Three-column layout (mini user overview, stream, campus & job widgets).
    - Rich post composer with category selector (💬 *General*, 💼 *Hiring Referral*, 🏆 *Achievement*, 📅 *College Event*) and image attachments.
+   - Verified alumnus checkmark (`<i class="bi bi-patch-check-fill"></i>`) next to verified author names.
    - Asynchronous Like/Unlike toggling with optimistic UI updates and live counters.
    - Expandable threaded comments with dynamic list rendering.
 
-5. **Career & Job Board (`jobs.php`):**
+7. **Career & Job Board (`jobs.php`):**
    - Job listings with filters for Full-Time, Internship, Remote, and Part-Time roles.
    - Comprehensive Job Details Modal with structured requirements, poster credentials, and deadline countdowns.
    - Opportunity Creator (`post-job.php`) with dual application pathways (direct career URL and referral email).
 
-6. **In-App Notifications & Alert Center (`notifications.php`):**
-   - Real-time polling badge in navigation bar (`#nav-notif-badge`) signaling unread alerts.
-   - Dedicated timeline for likes, comments, connection requests, and administrative verifications.
-   - One-click "Mark all as read" capability.
+8. **Event Gallery & Unified Album Management:**
+   - **Public Gallery (`gallery.php`):** Grouped by events with high-resolution lightbox viewing.
+   - **Admin Management (`admin/manage-gallery.php`):**
+     - **Unified Creation Flow:** Create an event and simultaneously upload multiple gallery photos in one submission.
+     - **Multi-File Upload:** File picker with real-time selection counter badge.
+     - **Event Editing:** Dedicated modal (`#editEventModal`) to update event title, date, venue, description, and replace/retain cover photos.
+     - **Live Filter:** Instant search filter to find albums by title or venue.
 
-7. **Institutional Admin Dashboard (`admin/index.php`):**
+9. **Institutional Admin Dashboard (`admin/index.php`):**
    - Live analytics metric cards (Registered Alumni, Pending Queue, Active Jobs, Discussion Posts).
-   - **Alumni Verification Queue (`admin/verify-alumni.php`):** Review roll numbers against institutional records to approve or reject alumni accounts.
-   - **User & Role Management (`admin/manage-users.php`):** Assign roles (Admin, Alumni, Student) and manage suspension states.
+   - **Alumni Verification Queue (`admin/verify-alumni.php`):** Review roll numbers against institutional records to approve or reject alumni accounts, automatically dispatching activation emails upon approval.
+   - **User & Role Management (`admin/manage-users.php`):** Assign roles (Admin, Alumni, Student), manage suspension states, and toggle verification with email notifications.
    - **Content Moderation (`admin/manage-posts.php`, `admin/manage-jobs.php`):** Oversight and deletion of flagged posts or obsolete job listings.
 
 ---
@@ -61,28 +79,30 @@
 
 ```text
 MITS-Alumni-Portal/
-├── .env                       # Environment credentials (DB, API keys, secrets - git-ignored)
+├── .env                       # Environment credentials (DB, API keys, secrets, SMTP - git-ignored)
 ├── .env.example               # Template for environment configuration
 ├── .gitignore                 # Excludes .env, sensitive logs, and user upload files
 ├── .htaccess                  # Enterprise Apache security, clean URLs, HTTPS & hardening
 ├── config/
 │   ├── env.php                # Lightweight native .env parser & env() helper
-│   ├── config.php             # App constants, BASE_URL, Google Client ID, timezone
+│   ├── config.php             # App constants, BASE_URL, Google Client ID, email policies, timezone
 │   ├── db.php                 # Procedural MySQLi connection with utf8mb4 encoding
 │   └── session.php            # Secure cookie configurations & session start
 │
 ├── includes/
 │   ├── header.php             # HTML head, Bootstrap 5.3 CSS, meta tags, CSRF token
-│   ├── navbar.php             # Responsive top navbar with dynamic auth status & badges
-│   ├── footer.php             # Footer layout, MITS links, toast container, JS scripts
+│   ├── navbar.php             # Responsive top navbar with dynamic auth status & verification badge
+│   ├── footer.php             # Footer layout, MITS branding links, toast container, JS scripts
 │   ├── functions.php          # Core procedural helpers (XSS escaping, CSRF, flash, queries)
-│   ├── auth_check.php         # Gatekeeper: redirects guests & prompts profile completion
-│   └── admin_check.php        # Gatekeeper: restricts access to admin role
+│   ├── mailer.php             # Transactional email dispatcher (SMTP socket client, mail(), templates)
+│   ├── auth_check.php         # Gatekeeper: enforces login, profile completion & admin verification
+│   └── admin_check.php        # Gatekeeper: restricts access strictly to admin role
 │
 ├── auth/
-│   ├── login.php              # Sign-In page with Google Identity Services (GIS) widget
-│   ├── google-callback.php    # Server-side Google JWT token verification & session establishment
+│   ├── login.php              # Sign-In page with Google Identity Services (GIS) widget & alumni notice
+│   ├── google-callback.php    # Server-side Google token verification, domain policy, session creation
 │   ├── complete-profile.php   # Onboarding wizard for new alumni (roll no, branch, batch)
+│   ├── pending-verification.php # Holding page for alumni awaiting admin credential verification
 │   └── logout.php             # Destroys session, clears cookies, redirects to login
 │
 ├── api/                       # Asynchronous JSON REST endpoints
@@ -95,39 +115,41 @@ MITS-Alumni-Portal/
 │
 ├── admin/
 │   ├── index.php              # Dashboard overview & platform metric cards
-│   ├── verify-alumni.php      # Verification queue for pending alumni accounts
+│   ├── verify-alumni.php      # Verification queue with automated approval email dispatch
 │   ├── manage-users.php       # User directory, role assignment, status toggling
 │   ├── manage-posts.php       # Content moderation and post deletion
 │   ├── manage-jobs.php        # Job listing review & status toggle
-│   └── manage-gallery.php     # Event album creation & photo upload management
+│   └── manage-gallery.php     # Unified event creation, album editing & photo uploads
 │
 ├── assets/
 │   ├── css/
-│   │   └── style.css          # Modern custom CSS in MITS Red (#d8151c) and White
+│   │   ├── style.css          # Custom styling in MITS Red (#d8151c) & White
+│   │   └── admin.css          # Dedicated Admin Console styles & tables
 │   ├── js/
 │   │   ├── main.js            # General UI helpers, toast alerts, notification poller
 │   │   ├── auth.js            # GIS token receiver and AJAX dispatcher
 │   │   ├── feed.js            # Social feed interactions (likes, comments, media preview)
 │   │   └── network.js         # Connection requests & acceptance AJAX handling
 │   └── images/
-│       ├── OSAM logo.jpg      # Official OSAM / MITS Connect portal logo
+│       ├── MITS Logo.png      # Official MITS College Logo (Header & Footer)
+│       ├── OSAM logo.jpg      # Official OSAM Alumni Association Logo
 │       ├── College Image.jpeg # Campus banner image
 │       └── default-avatar.png # Fallback avatar
 │
 ├── uploads/                   # Upload storage (protected by .htaccess)
 │   ├── avatars/               # User profile pictures
 │   ├── posts/                 # Images attached to community posts
-│   ├── gallery/               # Event and alumni group photos
-│   └── resumes/               # Optional candidate resumes
+│   ├── gallery/               # Event covers and alumni memories
+│   ├── mail_logs/             # Transactional email dispatch audit logs
+│   └── resumes/               # Candidate resumes
 │
 ├── database/
 │   ├── schema.sql             # Complete table structures, constraints, and indexes
 │   └── seed.sql               # Default admin user and sample test data
-├── .htaccess                  # Enterprise Apache security, HTTPS enforcement, headers & caching
-├── index.php                  # Unified Landing Page: Hero, OSAM Overview, Vision, Mission & Objectives
+├── index.php                  # Landing Page: Hero with Campus Background Carousel, OSAM Overview
 ├── gallery.php                # Campus & Event Gallery (grouped by events with lightbox)
 ├── feed.php                   # Alumni community feed
-├── directory.php              # Filterable Alumni Directory
+├── directory.php              # Filterable Alumni Directory (Verified access)
 ├── profile.php                # View user / alumni profile
 ├── edit-profile.php           # Edit bio, skills, work experience, photo upload
 ├── network.php                # Connection hub (Connections, Invitations, Sent, Recommendations)
@@ -137,54 +159,79 @@ MITS-Alumni-Portal/
 └── PROJECT_PLAN.md            # Comprehensive project architecture & roadmap
 ```
 
-
 ---
 
 ## 🛠️ Installation & Setup (XAMPP)
 
 ### 1. Prerequisites
 - **XAMPP** installed with Apache and MySQL services running.
-- **PHP 8.0+** enabled.
+- **PHP 8.0+** enabled with `openssl`, `curl`, and `mysqli` extensions.
 
 ### 2. Database Import
 1. Open phpMyAdmin at `http://localhost/phpmyadmin/`.
-2. Create a new database named `mits_alumni_portal` (or let the script create it).
+2. Create a new database named `mits_alumni_portal`.
 3. Import `database/schema.sql`.
-4. (Optional) Import `database/seed.sql` to populate sample verified alumni, admin accounts, and job postings:
+4. *(Optional)* Import `database/seed.sql` to populate sample verified alumni, admin accounts, and job postings:
    ```bash
-   # Or via terminal:
    C:\xampp\mysql\bin\mysql.exe -u root < database/schema.sql
    C:\xampp\mysql\bin\mysql.exe -u root < database/seed.sql
    ```
 
 ### 3. Application Configuration (.env)
-The portal uses an environment file (`.env`) for sensitive credentials and environment-specific settings.
+The portal uses an environment file (`.env`) for sensitive credentials and policies:
 
-1. Copy `.env.example` to `.env` in the root directory (already pre-configured for local XAMPP):
-   ```bash
-   cp .env.example .env
-   ```
-2. Verify or update the following variables in `.env`:
-   - `DB_NAME`: `mits_alumni_portal`
-   - `DB_USER`: `root`
-   - `DB_PASS`: *(leave blank for default XAMPP)*
-   - `GOOGLE_CLIENT_ID`: Paste your Google Cloud Console OAuth 2.0 Web Client ID.
-   - `APP_DEBUG`: Set to `true` during local development (enables fast-login switchers and verbose errors).
-   - `SUPER_ADMIN_EMAIL`: `admin@mits.ac.in` (auto-promoted to Admin on first sign-in).
+```bash
+cp .env.example .env
+```
+
+Key variables in `.env`:
+```dotenv
+# Application Environment
+APP_ENV=development
+APP_DEBUG=true
+
+# Database Credentials
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=mits_alumni_portal
+DB_USER=root
+DB_PASS=
+
+# Google OAuth 2.0 Web Client
+GOOGLE_CLIENT_ID="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET=
+
+# Super Administrator Email (Auto-promoted on first Google Sign-In)
+SUPER_ADMIN_EMAIL=admin@mits.ac.in
+
+# Email Domain Policy
+COLLEGE_EMAIL_DOMAINS="mgits.ac.in,mits.ac.in"
+BLOCK_COLLEGE_EMAIL_DOMAIN=true    # Forces personal emails (e.g. Gmail) for alumni
+RESTRICT_TO_COLLEGE_DOMAIN=false   # Set true only if restricting strictly to college email
+
+# SMTP Email Configuration (Used for verification emails)
+MAIL_DRIVER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_ENCRYPTION=tls
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-password
+MAIL_FROM_ADDRESS=noreply@mits.ac.in
+MAIL_FROM_NAME="MITS Connect"
+```
 
 ---
 
 ## 🌐 Hostinger VPS Deployment Guide (Ubuntu / Debian Apache 2.4)
 
 ### 1. Enable Required Apache Modules
-Connect to your Hostinger VPS via SSH and enable the necessary Apache modules:
 ```bash
 sudo a2enmod rewrite headers expires deflate ssl
 sudo systemctl restart apache2
 ```
 
 ### 2. Configure VirtualHost & Enable `.htaccess` Overrides
-Edit your Apache virtual host file (e.g. `/etc/apache2/sites-available/000-default.conf` or your domain config):
+Edit your Apache virtual host file (e.g. `/etc/apache2/sites-available/yourdomain.conf`):
 ```apache
 <VirtualHost *:80>
     ServerName yourdomain.com
@@ -201,11 +248,8 @@ Edit your Apache virtual host file (e.g. `/etc/apache2/sites-available/000-defau
     CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 ```
-> [!IMPORTANT]
-> `AllowOverride All` is required so Apache processes the security rules in `.htaccess`.
 
 ### 3. Deploy Files & Set Permissions
-Upload or clone the repository to your document root (e.g. `/var/www/html/`):
 ```bash
 sudo chown -R www-data:www-data /var/www/html
 sudo find /var/www/html -type d -exec chmod 755 {} \;
@@ -231,38 +275,47 @@ mysql -u mits_user -p mits_alumni_portal < database/seed.sql
 ```
 
 ### 5. Configure Production Environment (.env)
-1. On the VPS server, copy the template to `.env`:
-   ```bash
-   cp /var/www/html/.env.example /var/www/html/.env
-   ```
-2. Edit `/var/www/html/.env` with your production values:
-   ```env
-   APP_ENV=production
-   APP_DEBUG=false
-   APP_URL=https://yourdomain.com
+```bash
+cp /var/www/html/.env.example /var/www/html/.env
+```
+Update `/var/www/html/.env` with your production settings:
+```dotenv
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://yourdomain.com
 
-   DB_HOST=localhost
-   DB_PORT=3306
-   DB_NAME=mits_alumni_portal
-   DB_USER=mits_user
-   DB_PASS=StrongPasswordHere!
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=mits_alumni_portal
+DB_USER=mits_user
+DB_PASS=StrongPasswordHere!
 
-   GOOGLE_CLIENT_ID="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
-   SUPER_ADMIN_EMAIL=admin@mits.ac.in
-   ```
-3. Secure the `.env` permissions so only web server/root can read it:
-   ```bash
-   chmod 600 /var/www/html/.env
-   chown www-data:www-data /var/www/html/.env
-   ```
-4. In Google Cloud Console: Add your production domain (`https://yourdomain.com`) to **Authorized JavaScript Origins** and **Authorized Redirect URIs**.
+GOOGLE_CLIENT_ID="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+SUPER_ADMIN_EMAIL=admin@mits.ac.in
+
+BLOCK_COLLEGE_EMAIL_DOMAIN=true
+RESTRICT_TO_COLLEGE_DOMAIN=false
+
+MAIL_DRIVER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_ENCRYPTION=tls
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-google-app-password
+MAIL_FROM_ADDRESS=noreply@mits.ac.in
+MAIL_FROM_NAME="MITS Connect"
+```
+Secure file permissions:
+```bash
+chmod 600 /var/www/html/.env
+chown www-data:www-data /var/www/html/.env
+```
 
 ### 6. Free SSL Certificate with Let's Encrypt (Certbot)
 ```bash
 sudo apt install certbot python3-certbot-apache -y
 sudo certbot --apache -d yourdomain.com -d www.yourdomain.com
 ```
-Our `.htaccess` contains a safe bypass for `/.well-known/acme-challenge/`, ensuring Certbot automatic certificate renewals execute without interruption.
 
 ---
 
@@ -273,17 +326,18 @@ Our `.htaccess` contains a safe bypass for `/.well-known/acme-challenge/`, ensur
 3. Under **APIs & Services > OAuth consent screen**:
    - Choose **External** User Type.
    - Enter App name: `MITS Alumni Portal` and user support email.
-   - Save and proceed.
 4. Under **APIs & Services > Credentials**:
    - Click **Create Credentials > OAuth client ID**.
    - Application type: **Web application**.
    - Name: `MITS Alumni Web Client`.
    - **Authorized JavaScript origins:**
-     - `http://localhost`
+     - `http://localhost` (for local development)
+     - `https://yourdomain.com` (for production)
    - **Authorized redirect URIs:**
      - `http://localhost/MITS-Alumni-Portal/auth/login.php`
-5. Copy the generated **Client ID** and paste it into `.env`:
-   ```env
+     - `https://yourdomain.com/auth/login.php`
+5. Copy the generated **Client ID** into `.env`:
+   ```dotenv
    GOOGLE_CLIENT_ID="YOUR_COPIED_CLIENT_ID.apps.googleusercontent.com"
    ```
 
@@ -291,27 +345,29 @@ Our `.htaccess` contains a safe bypass for `/.well-known/acme-challenge/`, ensur
 
 ## 🧪 Demo Accounts (Local Development)
 
-When `APP_DEBUG=true` in `.env`, you can test any module instantly on the login page using the **Local Dev Fast-Login** buttons:
+When `APP_DEBUG=true` in `.env`, fast-login demo switchers appear on the login page for rapid module testing:
 
 | Account Name | Email | Role | Verification Status | Features to Test |
 |---|---|---|---|---|
 | **MITS Portal Administrator** | `admin@mits.ac.in` | `admin` | Verified | Admin Dashboard, Verification Queue, User Moderation |
-| **Kavya Sharma** | `kavya.sharma@example.com` | `alumni` | Verified | Feed, Likes, Comments, Network, Jobs, Edit Profile |
+| **Kavya Sharma** | `kavya.sharma@example.com` | `alumni` | Verified | Community Feed, Network, Jobs, Member Directory |
 | **Rahul Reddy** | `rahul.reddy@example.com` | `alumni` | Verified | Connections, Mentorship, Job Applications |
-| **New Graduate** | `new.student@gmail.com` | `alumni` | Pending | First-Time Profile Onboarding Wizard (`complete-profile.php`) |
+| **New Graduate** | `new.student@gmail.com` | `alumni` | Pending | First-Time Profile Wizard & Pending Verification Holding Screen |
 
 ---
 
 ## 🛡️ Security Architecture
 
-1. **Environment Credential Isolation (`.env`):** Sensitive database credentials, Google OAuth keys, and debug flags are stored exclusively in `.env`, which is excluded from version control via `.gitignore` and shielded from web access by Apache rules.
-2. **Google ID Token Server-Side Verification:** Cryptographically validates tokens via Google's tokeninfo API, checking `aud`, `iss`, and expiration.
-3. **Strict Session Security:** `cookie_httponly = true`, `cookie_samesite = 'Lax'`, `use_strict_mode = 1`, and session ID regeneration on login.
-4. **100% Prepared Statements:** All database queries utilize parameterized `mysqli_prepare`, `mysqli_stmt_bind_param`, and `mysqli_stmt_execute`. Zero raw SQL query string interpolation.
-5. **CSRF Protection:** Per-session cryptographic CSRF tokens embedded in all forms and injected into AJAX headers via `apiFetch()`.
-6. **Output Sanitization (XSS):** Every dynamic output escaped via `e()` (`htmlspecialchars(..., ENT_QUOTES, 'UTF-8')`).
-7. **Upload Security:** Strict MIME type checking via `finfo_file`, size limitation (5 MB), file renaming, and execution blocking via `uploads/.htaccess`.
-8. **Hostinger VPS .htaccess Hardening:** Root `.htaccess` enforces HTTPS (with Certbot bypass), blocks access to sensitive files (`.sql`, `.log`, `.env`, `.md`), denies direct requests to internal folders (`config/`, `database/`, `includes/`), blocks script execution in uploads, filters malicious injection strings, injects modern security headers (HSTS, X-Frame-Options, X-Content-Type-Options, CSP-ready), and configures Gzip compression and browser caching.
+1. **Strict Verification Gatekeeper:** Non-admin alumni cannot access member directories, social feeds, job boards, or member profiles until their credentials are confirmed by an administrator. Live database checks ensure access is granted immediately upon approval.
+2. **Environment Credential Isolation (`.env`):** Sensitive database credentials, Google OAuth keys, and SMTP secrets reside exclusively in `.env`, blocked from direct web access by Apache rules.
+3. **Google ID Token Server-Side Verification:** Cryptographically validates tokens via Google's tokeninfo API, matching `aud`, `iss`, and expiry.
+4. **Alumni Email Policy:** Configurable blocking of college email IDs (`@mgits.ac.in`) to prevent alumni from losing account access when student inboxes are retired.
+5. **Session Hardening:** `cookie_httponly = true`, `cookie_samesite = 'Lax'`, `use_strict_mode = 1`, and session ID regeneration on login.
+6. **100% Prepared Statements:** Parameterized queries via `mysqli_prepare` and `mysqli_stmt_bind_param`. Zero string concatenation into SQL statements.
+7. **CSRF Protection:** Per-session cryptographic CSRF tokens embedded in all forms and injected into AJAX headers.
+8. **Output Sanitization (XSS):** Dynamic output passed through `e()` (`htmlspecialchars(..., ENT_QUOTES, 'UTF-8')`).
+9. **Upload Hardening:** MIME validation via `finfo_file`, size limitation (5 MB), file renaming, and execution blocking via `uploads/.htaccess`.
+10. **Apache Hardening:** Root `.htaccess` enforces HTTPS (with Certbot bypass), blocks access to sensitive files (`.sql`, `.log`, `.env`, `.md`), denies direct requests to internal folders (`config/`, `database/`, `includes/`), and injects modern security headers (HSTS, X-Frame-Options, X-Content-Type-Options).
 
 ---
 

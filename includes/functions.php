@@ -162,6 +162,15 @@ function is_verified() {
     return is_logged_in() && (($_SESSION['user']['status'] ?? '') === 'verified');
 }
 
+/**
+ * Check if the user is pending verification
+ */
+function is_pending() {
+    return is_logged_in() && (($_SESSION['user']['status'] ?? '') === 'pending');
+}
+
+require_once __DIR__ . '/mailer.php';
+
 // ==============================================================
 // 5. Database Prepared Statement Helpers (Procedural)
 // ==============================================================

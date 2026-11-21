@@ -122,10 +122,32 @@ if (!$google_user) {
 }
 
 // 4. Query or Create User in MySQL Database
-$email = $google_user['email'];
+$email = strtolower(trim($google_user['email']));
 $name = $google_user['name'];
 $google_id = $google_user['sub'];
 $avatar = $google_user['picture'];
+
+// 4.1 Validate Email Domain Policy (Super Admin is always exempted)
+$is_super_admin = ($email === strtolower(trim(SUPER_ADMIN_EMAIL)));
+if (!$is_super_admin) {
+    $email_domain = substr(strrchr($email, "@"), 1);
+    $college_domains = defined('COLLEGE_EMAIL_DOMAINS') ? COLLEGE_EMAIL_DOMAINS : ['mgits.ac.in', 'mits.ac.in'];
+    $is_college_domain = in_array($email_domain, $college_domains, true);
+
+    // Policy 1: Restrict ONLY to college email accounts
+    if (defined('RESTRICT_TO_COLLEGE_DOMAIN') && RESTRICT_TO_COLLEGE_DOMAIN) {
+        if (!$is_college_domain) {
+            $allowed_str = '@' . implode(', @', $college_domains);
+            auth_error("Access restricted: Please sign in with your official college email account ({$allowed_str}).", $is_ajax);
+        }
+    }
+    // Policy 2: BLOCK college email accounts (Force permanent personal emails)
+    elseif (defined('BLOCK_COLLEGE_EMAIL_DOMAIN') && BLOCK_COLLEGE_EMAIL_DOMAIN) {
+        if ($is_college_domain) {
+            auth_error("Please sign in using your permanent personal Google account (e.g., Gmail). College student email IDs (@{$email_domain}) are deactivated after graduation.", $is_ajax);
+        }
+    }
+}
 
 $existing_user = db_fetch_one($conn, "SELECT * FROM users WHERE email = ? OR google_id = ? LIMIT 1", "ss", [$email, $google_id]);
 
@@ -179,6 +201,9 @@ $_SESSION['user']['profile_completed'] = $is_profile_complete;
 if (!$is_profile_complete) {
     $redirect_url = BASE_URL . '/auth/complete-profile.php';
     set_flash('info', 'Welcome ' . e($user['full_name']) . '! Please complete your alumni profile to unlock full access.');
+} elseif (!$is_admin_user && ($user['status'] ?? '') !== 'verified') {
+    $redirect_url = BASE_URL . '/auth/pending-verification.php';
+    set_flash('info', 'Welcome back! Your alumni profile is currently awaiting administrator verification.');
 } else {
     $default_home = $is_admin_user ? (BASE_URL . '/admin/index.php') : (BASE_URL . '/feed.php');
     $redirect_url = $_SESSION['redirect_url'] ?? $default_home;

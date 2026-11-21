@@ -88,12 +88,21 @@ include_once __DIR__ . '/includes/header.php';
                 </p>
                 <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start mb-4">
                     <?php if (is_logged_in()): ?>
-                        <a href="<?= e(BASE_URL) ?>/feed" class="btn btn-primary btn-lg rounded-pill px-4 shadow">
-                            <i class="bi bi-collection-play me-2"></i>Go to Community Feed
-                        </a>
-                        <a href="<?= e(BASE_URL) ?>/directory" class="btn btn-outline-light btn-lg rounded-pill px-4">
-                            <i class="bi bi-people me-2"></i>Explore Directory
-                        </a>
+                        <?php if (is_verified() || is_admin()): ?>
+                            <a href="<?= e(BASE_URL) ?>/feed" class="btn btn-primary btn-lg rounded-pill px-4 shadow">
+                                <i class="bi bi-collection-play me-2"></i>Go to Community Feed
+                            </a>
+                            <a href="<?= e(BASE_URL) ?>/directory" class="btn btn-outline-light btn-lg rounded-pill px-4">
+                                <i class="bi bi-people me-2"></i>Explore Directory
+                            </a>
+                        <?php else: ?>
+                            <a href="<?= e(BASE_URL) ?>/auth/pending-verification.php" class="btn btn-warning btn-lg rounded-pill px-4 shadow text-dark fw-semibold">
+                                <i class="bi bi-hourglass-split me-2"></i>Check Verification Status
+                            </a>
+                            <a href="#about" class="btn btn-outline-light btn-lg rounded-pill px-4">
+                                <i class="bi bi-info-circle me-2"></i>About OSAM
+                            </a>
+                        <?php endif; ?>
                     <?php else: ?>
                         <a href="<?= e(BASE_URL) ?>/auth/login" class="btn btn-primary btn-lg rounded-pill px-4 shadow">
                             <i class="bi bi-google me-2"></i>Join with Google Sign-In

@@ -51,6 +51,9 @@ include_once __DIR__ . '/../includes/header.php';
                          data-client_id="<?= e(GOOGLE_CLIENT_ID) ?>"
                          data-callback="handleGoogleCredentialResponse"
                          data-auto_prompt="false"
+                         <?php if (defined('RESTRICT_TO_COLLEGE_DOMAIN') && RESTRICT_TO_COLLEGE_DOMAIN && !empty(COLLEGE_EMAIL_DOMAINS[0])): ?>
+                         data-hd="<?= e(COLLEGE_EMAIL_DOMAINS[0]) ?>"
+                         <?php endif; ?>
                          data-context="signin">
                     </div>
 
@@ -67,10 +70,22 @@ include_once __DIR__ . '/../includes/header.php';
                         </div>
                     </div>
 
-                    <div class="small text-muted">
+                    <div class="small text-muted mb-2">
                         <i class="bi bi-shield-lock-fill text-success me-1"></i>
                         Safe & secure sign-in via Google Identity Services
                     </div>
+
+                    <?php if (defined('BLOCK_COLLEGE_EMAIL_DOMAIN') && BLOCK_COLLEGE_EMAIL_DOMAIN && (!defined('RESTRICT_TO_COLLEGE_DOMAIN') || !RESTRICT_TO_COLLEGE_DOMAIN)): ?>
+                        <div class="alert alert-light border small text-secondary mt-3 mb-0 text-start py-2 px-3 rounded-3" style="font-size: 0.8rem;">
+                            <i class="bi bi-info-circle text-primary me-1"></i>
+                            <strong>Alumni Notice:</strong> Please sign in with your permanent personal Google account (e.g. Gmail). College email IDs (@mgits.ac.in) get deactivated after graduation.
+                        </div>
+                    <?php elseif (defined('RESTRICT_TO_COLLEGE_DOMAIN') && RESTRICT_TO_COLLEGE_DOMAIN): ?>
+                        <div class="alert alert-light border small text-secondary mt-3 mb-0 text-start py-2 px-3 rounded-3" style="font-size: 0.8rem;">
+                            <i class="bi bi-shield-check text-success me-1"></i>
+                            <strong>Institutional Notice:</strong> Only official college Google accounts (@<?= e(implode(', @', COLLEGE_EMAIL_DOMAINS)) ?>) are permitted to sign in.
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <?php if ($is_dev_client_id): ?>

@@ -33,6 +33,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $valid_statuses = ['verified', 'pending', 'rejected', 'suspended'];
         if (in_array($new_status, $valid_statuses)) {
             db_execute($conn, "UPDATE users SET status = ? WHERE id = ?", "si", [$new_status, $target_id]);
+            
+            // If newly verified, dispatch congratulatory in-app notice and email
+            if ($new_status === 'verified') {
+                $target_user = db_fetch_one($conn, "SELECT id, full_name, email FROM users WHERE id = ? LIMIT 1", "i", [$target_id]);
+                if ($target_user) {
+                    $msg = 'Congratulations ' . $target_user['full_name'] . '! Your alumni credentials have been verified by the MITS administration.';
+                    db_execute($conn,
+                        "INSERT INTO notifications (user_id, actor_id, type, message) VALUES (?, ?, 'admin_verification', ?)",
+                        "iis",
+                        [$target_id, $current_admin['id'], $msg]
+                    );
+                    send_alumni_verified_email($target_user['email'], $target_user['full_name']);
+                }
+            }
+
             set_flash('success', 'User status updated to ' . ucfirst($new_status));
         }
     }
