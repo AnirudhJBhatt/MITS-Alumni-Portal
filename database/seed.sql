@@ -6,10 +6,11 @@ USE `mits_alumni_portal`;
 
 -- Insert Initial Admin and Sample Alumni Users
 INSERT INTO `users` (`id`, `google_id`, `email`, `full_name`, `avatar_url`, `role`, `status`) VALUES
-(1, 'google_admin_001', 'admin@mits.ac.in', 'MITS Portal Administrator', 'https://ui-avatars.com/api/?name=Admin+MITS&background=1e3a8a&color=ffffff&bold=true&size=128', 'admin', 'verified'),
+(1, 'google_admin_001', 'osam@mgits.ac.in', 'OSAM MITS Administrator', 'https://ui-avatars.com/api/?name=OSAM+Admin&background=1e3a8a&color=ffffff&bold=true&size=128', 'admin', 'verified'),
 (2, 'google_alumni_002', 'kavya.sharma@example.com', 'Kavya Sharma', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', 'alumni', 'verified'),
 (3, 'google_alumni_003', 'rahul.reddy@example.com', 'Rahul Reddy', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', 'alumni', 'verified'),
-(4, 'google_alumni_004', 'priya.nair@example.com', 'Priya Nair', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', 'alumni', 'verified')
+(4, 'google_alumni_004', 'priya.nair@example.com', 'Priya Nair', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', 'alumni', 'verified'),
+(5, 'google_admin_002', 'admin@mits.ac.in', 'MITS Portal Administrator', 'https://ui-avatars.com/api/?name=Admin+MITS&background=1e3a8a&color=ffffff&bold=true&size=128', 'admin', 'verified')
 ON DUPLICATE KEY UPDATE `email` = VALUES(`email`);
 
 -- Insert Alumni Profiles

@@ -48,7 +48,9 @@ if (APP_DEBUG && !empty($demo_email)) {
     if (!$user) {
         // Create demo account on the fly if not existing
         $name = ucwords(str_replace(['.', '_'], ' ', explode('@', $demo_email)[0]));
-        $role = ($demo_email === strtolower(SUPER_ADMIN_EMAIL)) ? 'admin' : 'alumni';
+        $super_admins = defined('SUPER_ADMIN_EMAILS') ? SUPER_ADMIN_EMAILS : [strtolower(trim(SUPER_ADMIN_EMAIL))];
+        $is_admin_email = in_array($demo_email, $super_admins, true) || ($demo_email === 'osam@mgits.ac.in');
+        $role = $is_admin_email ? 'admin' : 'alumni';
         $status = 'verified';
         
         $stmt = db_execute($conn, 
@@ -127,9 +129,17 @@ $name = $google_user['name'];
 $google_id = $google_user['sub'];
 $avatar = $google_user['picture'];
 
-// 4.1 Validate Email Domain Policy (Super Admin is always exempted)
-$is_super_admin = ($email === strtolower(trim(SUPER_ADMIN_EMAIL)));
-if (!$is_super_admin) {
+// 4.1 Validate Email Domain Policy (Super Admin & Official Admin emails are exempted)
+$super_admins = defined('SUPER_ADMIN_EMAILS') ? SUPER_ADMIN_EMAILS : [strtolower(trim(SUPER_ADMIN_EMAIL))];
+$is_super_admin = in_array($email, $super_admins, true) || ($email === 'osam@mgits.ac.in');
+
+// Check if user already exists with admin role in DB
+$pre_check_user = db_fetch_one($conn, "SELECT role FROM users WHERE email = ? LIMIT 1", "s", [$email]);
+$is_existing_admin = ($pre_check_user && ($pre_check_user['role'] ?? '') === 'admin');
+
+$is_exempt_from_block = ($is_super_admin || $is_existing_admin);
+
+if (!$is_exempt_from_block) {
     $email_domain = substr(strrchr($email, "@"), 1);
     $college_domains = defined('COLLEGE_EMAIL_DOMAINS') ? COLLEGE_EMAIL_DOMAINS : ['mgits.ac.in', 'mits.ac.in'];
     $is_college_domain = in_array($email_domain, $college_domains, true);
@@ -155,10 +165,10 @@ if ($existing_user) {
     // Existing user: update avatar & google_id if needed
     $user_id = $existing_user['id'];
     
-    // Auto-promote super admin if designated in config
+    // Auto-promote super admin if designated in config or official admin email
     $role = $existing_user['role'];
     $status = $existing_user['status'];
-    if (strtolower($email) === strtolower(SUPER_ADMIN_EMAIL) && $role !== 'admin') {
+    if ($is_super_admin && $role !== 'admin') {
         $role = 'admin';
         $status = 'verified';
     }
@@ -172,7 +182,7 @@ if ($existing_user) {
     $user = db_fetch_one($conn, "SELECT * FROM users WHERE id = ? LIMIT 1", "i", [$user_id]);
 } else {
     // New user registration
-    $role = (strtolower($email) === strtolower(SUPER_ADMIN_EMAIL)) ? 'admin' : 'alumni';
+    $role = $is_super_admin ? 'admin' : 'alumni';
     $status = ($role === 'admin') ? 'verified' : 'pending';
 
     $stmt = db_execute($conn,

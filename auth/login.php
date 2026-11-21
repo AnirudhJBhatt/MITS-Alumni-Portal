@@ -120,12 +120,12 @@ include_once __DIR__ . '/../includes/header.php';
                                 </div>
                                 <i class="bi bi-arrow-right-short fs-4 text-secondary"></i>
                             </button>
-                            <button type="button" onclick="signInAsDemo('admin@mits.ac.in')" class="btn btn-sm btn-light border text-start d-flex align-items-center justify-content-between py-2 px-3 rounded-3">
+                            <button type="button" onclick="signInAsDemo('osam@mgits.ac.in')" class="btn btn-sm btn-light border text-start d-flex align-items-center justify-content-between py-2 px-3 rounded-3">
                                 <div>
-                                    <div class="fw-semibold text-danger">MITS Portal Administrator</div>
-                                    <small class="text-muted">Admin Role • Access to Verification Dashboard</small>
+                                    <div class="fw-semibold text-danger">OSAM Admin (osam@mgits.ac.in)</div>
+                                    <small class="text-muted">Exempt Admin College Email • Verification Dashboard</small>
                                 </div>
-                                <i class="bi bi-arrow-right-short fs-4 text-danger"></i>
+                                <i class="bi bi-shield-lock-fill fs-5 text-danger"></i>
                             </button>
                             <button type="button" onclick="signInAsDemo('new.alumnus@gmail.com')" class="btn btn-sm btn-light border text-start d-flex align-items-center justify-content-between py-2 px-3 rounded-3">
                                 <div>

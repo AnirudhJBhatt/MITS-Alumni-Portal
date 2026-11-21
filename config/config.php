@@ -51,8 +51,11 @@ define('ALLOWED_IMAGE_TYPES', ['image/jpeg', 'image/png', 'image/webp', 'image/g
 define('GOOGLE_CLIENT_ID', env('GOOGLE_CLIENT_ID', 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com'));
 define('GOOGLE_CLIENT_SECRET', env('GOOGLE_CLIENT_SECRET', ''));
 
-// 6. Super Administrator Email
-define('SUPER_ADMIN_EMAIL', env('SUPER_ADMIN_EMAIL', 'admin@mits.ac.in'));
+// 6. Super Administrator Email(s)
+$raw_admins = (string)env('SUPER_ADMIN_EMAIL', 'osam@mgits.ac.in,admin@mits.ac.in');
+$parsed_admins = array_values(array_filter(array_map('trim', explode(',', strtolower($raw_admins)))));
+define('SUPER_ADMIN_EMAILS', !empty($parsed_admins) ? $parsed_admins : ['osam@mgits.ac.in', 'admin@mits.ac.in']);
+define('SUPER_ADMIN_EMAIL', SUPER_ADMIN_EMAILS[0] ?? 'osam@mgits.ac.in');
 
 // 7. Email Domain Restriction Policy
 $raw_domains = (string)env('COLLEGE_EMAIL_DOMAINS', 'mgits.ac.in,mits.ac.in');

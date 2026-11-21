@@ -20,16 +20,19 @@
 1. **Authentication, Onboarding & Domain Policy:**
    - **Google Identity Services (GIS):** Seamless sign-in using Google One-Tap and standard GIS button with server-side token verification via Google's `oauth2.googleapis.com/tokeninfo`.
    - **Configurable Email Domain Policy:**
-     - `BLOCK_COLLEGE_EMAIL_DOMAIN=true`: Rejects student accounts (`@mgits.ac.in`) and forces permanent personal emails (e.g., Gmail) so alumni never lose portal access when college email IDs are revoked post-graduation.
+     - `BLOCK_COLLEGE_EMAIL_DOMAIN=true`: Rejects student college accounts (`@mgits.ac.in`) and forces permanent personal emails (e.g., Gmail) so alumni never lose portal access when college email IDs are deactivated post-graduation.
      - `RESTRICT_TO_COLLEGE_DOMAIN=true`: Optional inverse mode to restrict sign-ins strictly to institutional Google Workspace domains (`data-hd="mgits.ac.in"`).
-     - `SUPER_ADMIN_EMAIL` is exempt from domain rules.
+     - **Admin Exception (`osam@mgits.ac.in`):** The official college administrative email `osam@mgits.ac.in` (and any comma-separated email in `SUPER_ADMIN_EMAIL`) is explicitly exempted from the college domain block, auto-promoted to `role = 'admin'` and `status = 'verified'`, and routed directly to the Admin Console.
    - **First-Time Onboarding Wizard (`auth/complete-profile.php`):** Captures college roll number, department, graduation batch, employer, and mentorship availability.
    - **Local Dev Switchers:** Fast-login demo buttons for instant testing when `APP_DEBUG = true`.
 
-2. **Strict Verification Gatekeeper & Holding Area:**
-   - **Gatekeeper Middleware (`includes/auth_check.php`):** Non-admin alumni cannot browse private member areas (Directory, Feed, Network, Jobs, Member Profiles) until their account is verified by the MITS administration.
-   - **Live Dynamic Status Refresh:** Queries the database on each request; the moment an administrator approves the candidate, access is unlocked instantly on their next click without requiring re-login.
-   - **Holding Screen (`auth/pending-verification.php`):** Displays submitted roll number, branch, and batch, with a "Check Verification Status" live re-query button, an "Edit Submitted Info" option, and clear status guidance.
+2. **Alumni Verification & Onboarding Lifecycle:**
+   - **Step 1 — Google Sign-In:** Graduate signs in using their permanent personal email (e.g., Gmail). College student IDs (`@mgits.ac.in`) are rejected to preserve long-term access.
+   - **Step 2 — Onboarding Wizard:** First-time login automatically redirects to `/auth/complete-profile.php` to collect graduation year, department, university roll number, current organization, and job title.
+   - **Step 3 — Access-Controlled Holding Area:** The user is placed in `pending` status and directed to `/auth/pending-verification.php`. Public pages (Homepage, OSAM Gallery) remain accessible, but all community features (Feed, Member Directory, Network, Jobs, Member Profiles) are strictly locked by `includes/auth_check.php`.
+   - **Step 4 — Admin Review:** Portal administrators review credentials against institutional student databases in `/admin/verify-alumni.php` and approve or reject the request.
+   - **Step 5 — Automated Email Notification:** Approval immediately triggers `includes/mailer.php`, sending a responsive, branded HTML verification email to the alumnus.
+   - **Step 6 — Instant Platform Unlock:** The moment verification is approved in the database, the alumnus's next page load or click on the "Check Verification Status" button immediately unlocks full verified access without requiring re-authentication.
 
 3. **Transactional Email Notifications (SMTP / PHP mail):**
    - **Automated Verification Email (`includes/mailer.php`):** When an administrator verifies an alumnus in the queue, a branded, responsive HTML congratulatory email is automatically dispatched to their registered email address.
@@ -201,12 +204,12 @@ DB_PASS=
 GOOGLE_CLIENT_ID="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
 GOOGLE_CLIENT_SECRET=
 
-# Super Administrator Email (Auto-promoted on first Google Sign-In)
-SUPER_ADMIN_EMAIL=admin@mits.ac.in
+# Super Administrator Email (Auto-promoted on first Google Sign-In, exempt from college domain block)
+SUPER_ADMIN_EMAIL=osam@mgits.ac.in,admin@mits.ac.in
 
 # Email Domain Policy
 COLLEGE_EMAIL_DOMAINS="mgits.ac.in,mits.ac.in"
-BLOCK_COLLEGE_EMAIL_DOMAIN=true    # Forces personal emails (e.g. Gmail) for alumni
+BLOCK_COLLEGE_EMAIL_DOMAIN=true    # Forces personal emails (e.g. Gmail) for alumni (osam@mgits.ac.in is exempted)
 RESTRICT_TO_COLLEGE_DOMAIN=false   # Set true only if restricting strictly to college email
 
 # SMTP Email Configuration (Used for verification emails)
@@ -291,7 +294,7 @@ DB_USER=mits_user
 DB_PASS=StrongPasswordHere!
 
 GOOGLE_CLIENT_ID="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
-SUPER_ADMIN_EMAIL=admin@mits.ac.in
+SUPER_ADMIN_EMAIL=osam@mgits.ac.in,admin@mits.ac.in
 
 BLOCK_COLLEGE_EMAIL_DOMAIN=true
 RESTRICT_TO_COLLEGE_DOMAIN=false
@@ -349,10 +352,11 @@ When `APP_DEBUG=true` in `.env`, fast-login demo switchers appear on the login p
 
 | Account Name | Email | Role | Verification Status | Features to Test |
 |---|---|---|---|---|
-| **MITS Portal Administrator** | `admin@mits.ac.in` | `admin` | Verified | Admin Dashboard, Verification Queue, User Moderation |
+| **OSAM Administrator** | `osam@mgits.ac.in` | `admin` | Verified | Admin Dashboard, Verification Queue, User Moderation *(Exempt from college domain block)* |
+| **MITS Secondary Admin** | `admin@mits.ac.in` | `admin` | Verified | Admin Console, Multi-admin support |
 | **Kavya Sharma** | `kavya.sharma@example.com` | `alumni` | Verified | Community Feed, Network, Jobs, Member Directory |
 | **Rahul Reddy** | `rahul.reddy@example.com` | `alumni` | Verified | Connections, Mentorship, Job Applications |
-| **New Graduate** | `new.student@gmail.com` | `alumni` | Pending | First-Time Profile Wizard & Pending Verification Holding Screen |
+| **New Graduate** | `new.alumnus@gmail.com` | `alumni` | Pending | First-Time Profile Wizard & Pending Verification Holding Screen |
 
 ---
 
